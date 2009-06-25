@@ -47,6 +47,7 @@
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
 				if(settings.type && !ajaxSettings.dataType) ajaxSettings.dataType = settings.type;
+				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = true;
 				ajaxSettings.success = function(data) {
 					if(prevContent && prevContent == data) {
