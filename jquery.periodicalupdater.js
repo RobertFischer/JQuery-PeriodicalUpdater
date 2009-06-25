@@ -15,10 +15,10 @@
  */
 
 (function($) {
-    $.PeriodicalUpdater = function(options, callback){
+    $.PeriodicalUpdater = function(url, options, callback){
 
         settings = jQuery.extend(true, {
-            url: '',                // URL of ajax request
+            url: url,                // URL of ajax request
             method: 'get',          // method; get or post
             sendData: '',           // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
             minTimeout: 1000,       // starting value for the timeout in milliseconds
@@ -46,7 +46,7 @@
 
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
-				ajaxSettings.dataType = settings.type;
+				if(settings.type && !ajaxSettings.dataType) ajaxSettings.dataType = settings.type;
 				ajaxSettings.ifModified = true;
 				ajaxSettings.success = function(data) {
 					if(prevContent && prevContent == data) {
