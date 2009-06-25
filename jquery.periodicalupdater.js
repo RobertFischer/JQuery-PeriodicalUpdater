@@ -60,10 +60,10 @@
 					if(settings.success) { settings.success(data); }
 				};
 				ajaxSettings.error = function (XMLHttpRequest, textStatus) { 
-					prevContent = null;
 					if(textStatus == "notmodified") {
 						boostPeriod();
 					} else {
+						prevContent = null;
 						timerInterval = settings.minTimeout;
 					}
 					PeriodicalTimer = setTimeout(getdata, timerInterval);
