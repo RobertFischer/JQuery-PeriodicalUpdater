@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery.periodicalupdater.js"></script>
+	</head>
+	<body>
+		<script>
+			$.PeriodicalUpdater({url:"queryMe.html"}, 
+				function(newData) {
+					$('body').append(newData);
+					$('body').append("<br />");
+					$('body').append(new Date().toString());
+				}
+			);
+		</script>
+	</body>
+</html>
