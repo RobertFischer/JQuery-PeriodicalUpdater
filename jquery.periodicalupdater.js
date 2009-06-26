@@ -17,7 +17,7 @@
 (function($) {
     $.PeriodicalUpdater = function(url, options, callback){
 
-        settings = jQuery.extend(true, {
+        var settings = jQuery.extend(true, {
             url: url,                // URL of ajax request
             method: 'get',          // method; get or post
             sendData: '',           // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
@@ -44,11 +44,14 @@
 					};
 				} 
 
+				var PeriodicalTimer = null; // Getting a handle on this for some reason
+
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
 				if(settings.type && !ajaxSettings.dataType) ajaxSettings.dataType = settings.type;
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
-				ajaxSettings.ifModified = true;
+				ajaxSettings.ifModified = false;
+				ajaxSettings.cache = false;
 				ajaxSettings.success = function(data) {
 					if(prevContent && prevContent == data) {
 						boostPeriod();
