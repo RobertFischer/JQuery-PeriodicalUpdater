@@ -2,9 +2,11 @@ A port of Prototype's Ajax.PeriodicalUpdater function to jQuery.
 
 Basically, this function polls some remote service at fairly regular internvals, 
 and (optionally) processes the result via a callback.  The period of calls will
-decay as long as the same response keeps coming back from the server.   The 
-first call happens as a page 'onReady' handler $(function), so it is safe to put 
-the PeriodicalUpdater call anywhere on the page.
+decay as long as the same response keeps coming back from the server (either in
+the form of repeated data or in the form of a 304 Not Modified status), which 
+reduces the load on the server naturally.   The first Ajax call happens as a page 
+'onReady' handler $(function), so it is safe to put the PeriodicalUpdater call 
+anywhere on the page.
 
 Usage:
 $.PeriodicalUpdater('/path/to/service', {
