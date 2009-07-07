@@ -37,8 +37,7 @@
 					boostPeriod = function() { 
 						timerInterval = timerInterval * settings.multiplier;
 						
-						if(timerInterval > settings.maxTimeout)
-						{
+						if(timerInterval > settings.maxTimeout) {
 								timerInterval = settings.maxTimeout;
 						}
 					};
@@ -54,12 +53,18 @@
 				ajaxSettings.ifModified = false;
 				ajaxSettings.cache = false;
 				ajaxSettings.success = function(data) {
-					if(prevContent && prevContent == data) {
+					var pData = $.param(data);
+					if(prevContent && prevContent == pData) {
 						boostPeriod();
 					} else {
-						prevContent = data;
+						if(console) {
+							console.log("Change in data: old data is " + prevContent + " and new data is " + pData);
+						}
+						prevContent = pData;
 						timerInterval = settings.minTimeout;
-						if(callback) { callback(data); }
+						if(callback) { 
+							callback(data); 
+						}
 					}
 					PeriodicalTimer = setTimeout(getdata, timerInterval);
 					if(settings.success) { settings.success(data); }
@@ -68,6 +73,9 @@
 					if(textStatus == "notmodified") {
 						boostPeriod();
 					} else {
+						if(console) {
+							console.log("Resetting due to error: " + textStatus);
+						}
 						prevContent = null;
 						timerInterval = settings.minTimeout;
 					}
@@ -77,8 +85,7 @@
 
 				// Make the first call
         $(function() { getdata(); });
-				function getdata() {
-						$.ajax(ajaxSettings);
-        }
+
+				function getdata() { $.ajax(ajaxSettings); }
     };  
 })(jQuery);
