@@ -54,7 +54,7 @@
 				ajaxSettings.cache = false;
 				ajaxSettings.success = function(data) {
 					var pData = $.param(data);
-					if(prevContent && prevContent == pData) {
+					if((prevContent || prevContent == "") && prevContent == pData) {
 						boostPeriod();
 					} else {
 						if(console) {
