@@ -18,13 +18,13 @@
     $.PeriodicalUpdater = function(url, options, callback){
 
         var settings = jQuery.extend(true, {
-            url: url,                // URL of ajax request
-            method: 'get',          // method; get or post
+            url: url,               // URL of ajax request
+						cache: false,						// By default, don't allow caching
+            method: 'GET',          // method; get or post
             data: '',           		// array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
             minTimeout: 1000,       // starting value for the timeout in milliseconds
             maxTimeout: 8000,       // maximum length of time between requests
-            multiplier: 2,          // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
-            type: 'text'            // response type - text, xml, json etc 
+            multiplier: 2           // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
         }, options);
         
         // set some initial values, then begin
@@ -53,7 +53,7 @@
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = false;
 				ajaxSettings.success = function(data) {
-					if(knowIsSame || (prevContent || prevContent == "") && prevContent == pData) {
+					if(knowIsSame || (prevContent || prevContent == "") && prevContent == data) {
 						boostPeriod();
 					} else {
 						if(console) {
