@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script src="http://github.com/RobertFischer/JQuery-PeriodicalUpdater/raw/master/jquery.periodicalupdater.js"></script>
+	</head>
+	<body>
+		<p>This is a demo of the JQuery PeriodicalUpdater.  For more information, see the <a href="http://github.com/RobertFischer/JQuery-PeriodicalUpdater/raw/master/README">README</a>.</p>
+
+		<p>
+			<h3>Robert's Tweets (<a href="http://twitter.com/RobertFischer">@RobertFischer</a>)</h3>
+			<ul id="roberts_tweets"></ul>
+		</p>
+<script>
+$.PeriodicalUpdater('http://twitter.com/statuses/user_timeline/robertfischer.xml', {
+	minTimeout: 10*1000,       // starting value for the timeout in milliseconds
+	maxTimeout: 180*1000,      // maximum length of time between requests
+	multiplier: 3,          	// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+	type: 'xml'            	// response type - text, xml, json, etc.  See $.ajax config options
+}, function(data) {
+	var tweets = $('#roberts_tweets');
+	$.each(data, function() {
+		var newElt = $('<li> ' + this.text + '</li>');
+
+		// Take out sneaky hacker types
+		newElt.children('script').replaceWith('');
+		newElt.children('script').replaceWith('');
+		
+		tweets.append(newElt);
+	});
+});
+</script>
+
+		<p>
+			<h3>Public Tweets</h3>
+			<ul id="public_tweets"></ul>
+		</p>
+<script>
+$.PeriodicalUpdater('http://twitter.com/statuses/public_timeline.json', {
+	minTimeout: 4*1000,       // starting value for the timeout in milliseconds
+	maxTimeout: 60*1000,      // maximum length of time between requests
+	multiplier: 2,          	// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+	type: 'json'            	// response type - text, xml, json, etc.  See $.ajax config options
+}, function(data) {
+	var tweets = $('#public_tweets');
+	tweets.empty();
+	$.each(data, function() {
+		var newElt = $('<li><b>' + this.user.screen_name + ':</b> ' + this.text + '</li>');
+
+		// Take out sneaky hacker types
+		newElt.children('script').replaceWith('');
+		newElt.children('script').replaceWith('');
+		
+		tweets.append(newElt);
+	});
+});
+</script>
+
+		<p>Developed by Robert Fischer of <a href="http://smokejumperit.com">Smokejumper IT</a>.</p>
+
+	</body>
+</html>
