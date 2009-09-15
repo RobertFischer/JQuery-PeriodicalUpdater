@@ -11,7 +11,7 @@
 			<ul id="roberts_tweets"></ul>
 		</p>
 <script>
-$.PeriodicalUpdater('http://twitter.com/statuses/user_timeline/robertfischer.xml', {cache:false},
+$.PeriodicalUpdater('http://twitter.com/statuses/user_timeline/robertfischer.xml', {cache:true},
 function(data) {
 	var tweets = $('#roberts_tweets');
 	$.each(data, function() {
@@ -35,7 +35,7 @@ $.PeriodicalUpdater('http://twitter.com/statuses/public_timeline.json', {
 	minTimeout: 4*1000,       
 	maxTimeout: 60*1000,     
 	multiplier: 1.1,          
-	cache: false
+	cache: true
 }, function(data) {
 	var tweets = $('#public_tweets');
 	tweets.empty();
