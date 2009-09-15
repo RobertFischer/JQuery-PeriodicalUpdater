@@ -29,6 +29,7 @@
         
         // set some initial values, then begin
         var prevContent = null;
+				var knowIsSame = false;
         var timerInterval = settings.minTimeout;
 
 				// Function to boost the timer (nop unless multiplier > 1)
@@ -53,14 +54,13 @@
 				ajaxSettings.ifModified = false;
 				ajaxSettings.cache = false;
 				ajaxSettings.success = function(data) {
-					var pData = $.param(data);
-					if((prevContent || prevContent == "") && prevContent == pData) {
+					if(knowIsSame || (prevContent || prevContent == "") && prevContent == pData) {
 						boostPeriod();
 					} else {
 						if(console) {
-							console.log("Change in data: old data is " + prevContent + " and new data is " + pData);
+							console.log("Change in data: old data is " + prevContent + " and new data is " + data);
 						}
-						prevContent = pData;
+						prevContent = data;
 						timerInterval = settings.minTimeout;
 						if(callback) { 
 							callback(data); 
@@ -70,7 +70,7 @@
 					if(settings.success) { settings.success(data); }
 				};
 				ajaxSettings.error = function (XMLHttpRequest, textStatus) { 
-					if(textStatus == "notmodified") {
+					if(knowIsSame || textStatus == "notmodified") {
 						boostPeriod();
 					} else {
 						if(console) {
@@ -83,9 +83,17 @@
 					if(settings.error) { settings.error(XMLHttpRequest, textStatus); }
 				};
 
-				// Make the first call
-        $(function() { getdata(); });
+				var oldRawData = null;
+				ajaxSettings.dataFilter = function (data, type) {
+					if(settings.dataFilter) data = settings.dataFilter(data, type);
+					knowIsSame = (data && oldRawData && data == oldRawData);
+					oldRawData = data;
+  				return data;
+				};
 
 				function getdata() { $.ajax(ajaxSettings); }
+
+				// Make the first call
+        $(function() { getdata(); });
     };  
 })(jQuery);
