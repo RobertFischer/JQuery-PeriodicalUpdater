@@ -52,7 +52,6 @@
 				if(settings.sendData) ajaxSettings.data = settings.sendData;
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = false;
-				ajaxSettings.cache = false;
 				ajaxSettings.success = function(data) {
 					if(knowIsSame || (prevContent || prevContent == "") && prevContent == pData) {
 						boostPeriod();
