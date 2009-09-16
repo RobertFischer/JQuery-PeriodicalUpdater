@@ -7,58 +7,28 @@
 		<p>This is a demo of the JQuery PeriodicalUpdater.  For more information, see the <a href="http://github.com/RobertFischer/JQuery-PeriodicalUpdater/raw/master/README">README</a>.</p>
 
 		<p>
-			<h3>Robert's Tweets (<a href="http://twitter.com/RobertFischer">@RobertFischer</a>)</h3>
-			<ul id="roberts_tweets"></ul>
+			<h3>Recent Commits</h3>
+			<ul id="commits"></ul>
 		</p>
 <script>
-$.PeriodicalUpdater('http://search.twitter.com/search.json', {
+$.PeriodicalUpdater('/api/v1/json/robertfischer/JQuery-PeriodicalUpdater/commits/master', {
 	minTimeout: 10*1000,
 	maxTimeout: 10*60*1000,
 	multiplier: 2.3,
-	data: {
-		lang: 'en',
-		rpp: 5,
-		show_user: true,
-		q: 'from:robertfischer'
-	},
+	dataType:'json',
 	cache:true
 },
 function(data) {
-	var tweets = $('#roberts_tweets');
-	tweets.empty();
+	var commits = $('#commits');
+	commits.empty();
 	$.each(data, function() {
-		var newElt = $('<li> ' + this.text + '</li>');
+		var newElt = $('<li> ' + this.message + '</li>');
 
 		// Take out sneaky hacker types
 		newElt.children('script').replaceWith('');
-		newElt.children('script').replaceWith('');
+		newElt.children('img').replaceWith('');
 		
-		tweets.append(newElt);
-	});
-});
-</script>
-
-		<p>
-			<h3>Public Tweets</h3>
-			<ul id="public_tweets"></ul>
-		</p>
-<script>
-$.PeriodicalUpdater('http://twitter.com/statuses/public_timeline.json', {
-	minTimeout: 4*1000,       
-	maxTimeout: 60*1000,     
-	multiplier: 1.1,          
-	cache: true
-}, function(data) {
-	var tweets = $('#public_tweets');
-	tweets.empty();
-	$.each(data, function() {
-		var newElt = $('<li><b>' + this.user.screen_name + ':</b> ' + this.text + '</li>');
-
-		// Take out sneaky hacker types
-		newElt.children('script').replaceWith('');
-		newElt.children('script').replaceWith('');
-		
-		tweets.append(newElt);
+		commits.append(newElt);
 	});
 });
 </script>
