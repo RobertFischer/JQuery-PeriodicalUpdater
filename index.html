@@ -11,9 +11,21 @@
 			<ul id="roberts_tweets"></ul>
 		</p>
 <script>
-$.PeriodicalUpdater('http://twitter.com/statuses/user_timeline/robertfischer.xml', {cache:true},
+$.PeriodicalUpdater('http://search.twitter.com/search.xml', {
+	minTimeout: 10*1000,
+	maxTimeout: 10*60*1000,
+	multiplier: 2.3,
+	data: {
+		lang: 'en',
+		rpp: 5,
+		show_user: true,
+		q: 'from:robertfischer'
+	},
+	cache:true
+},
 function(data) {
 	var tweets = $('#roberts_tweets');
+	tweets.empty();
 	$.each(data, function() {
 		var newElt = $('<li> ' + this.text + '</li>');
 
