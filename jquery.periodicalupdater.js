@@ -15,6 +15,26 @@
  */
 
 (function($) {
+		// From http://www.hiteshagrawal.com/javascript/convert-xml-document-to-string-in-javascript
+		var xml_content_string = function(xmlData) {
+			if (window.ActiveXObject) {
+				//for IE
+				xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.async="false";
+				xmlDoc.loadXML(xmlData);
+				return xmlDoc.xml;
+			} else if (document.implementation && document.implementation.createDocument) {
+				//for Mozila
+				parser=new DOMParser();
+				xmlDoc=parser.parseFromString(xmlData,"text/xml");
+				return xmlDoc.xml;
+			} else {
+				// Punt!
+				return xmlData;
+			}
+		};
+
+		// Now back to our regularly scheduled work
     $.PeriodicalUpdater = function(url, options, callback){
 
         var settings = jQuery.extend(true, {
@@ -85,8 +105,15 @@
 				var oldRawData = null;
 				ajaxSettings.dataFilter = function (data, type) {
 					if(settings.dataFilter) data = settings.dataFilter(data, type);
-					knowIsSame = (data && oldRawData && data == oldRawData);
-					oldRawData = data;
+					knowIsSame = false;
+					if(data) {
+						var dataStr = data;
+						if(ajaxSettings.dataType == "xml") {
+							dataStr = xml_content_string(data);
+						}
+						knowIsSame = (oldRawData && dataStr == oldRawData);
+						oldRawData = dataStr;
+					} 
   				return data;
 				};
 
