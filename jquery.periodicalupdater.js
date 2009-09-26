@@ -48,7 +48,7 @@
 				if(settings.type && !ajaxSettings.dataType) ajaxSettings.dataType = settings.type;
 				if(settings.sendData) ajaxSettings.data = settings.sendData;
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
-				ajaxSettings.ifModified = false;
+				ajaxSettings.ifModified = true;
 				ajaxSettings.success = function(data) {
 					if(settings.success) { settings.success(data); }
 					timerInterval = settings.minTimeout;
