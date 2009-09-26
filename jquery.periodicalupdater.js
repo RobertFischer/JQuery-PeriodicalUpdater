@@ -31,23 +31,6 @@
         // set some initial values, then begin
         var timerInterval = settings.minTimeout;
 
-				// Function to test if there was a change
-				var no_change = function() {
-					var prev = null;
-					return function(xhr) {
-						var is_same = true;
-						var response;
-						if(xhr.responseText != null) {
-							response = xhr.responseText;
-						} else if(xhr.responseXML != null) {
-							response = xhr.responseXML;
-						}
-						if(prev && response) is_same = (response == prev);
-						prev = response;
-						return is_same;
-					};
-				}();
-
 				// Function to boost the timer (nop unless multiplier > 1)
 				var boostPeriod = function() { return; };
 				if(settings.multiplier > 1) {
@@ -67,18 +50,12 @@
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = false;
 				ajaxSettings.success = function(data) {
-					if(no_change(this.xhr())) {
-						boostPeriod();
-					} else {
-						timerInterval = settings.minTimeout;
-						if(callback) { 
-							callback(data); 
-						}
-					}
 					if(settings.success) { settings.success(data); }
+					timerInterval = settings.minTimeout;
+					if(callback) callback(data);
 				};
 				ajaxSettings.error = function (xhr, textStatus) { 
-					if(textStatus == "notmodified" || no_change(xhr)) {
+					if(textStatus == "notmodified") {
 						boostPeriod();
 					} else {
 						timerInterval = settings.minTimeout;
