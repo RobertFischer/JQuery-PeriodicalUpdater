@@ -48,7 +48,6 @@
         }, options);
         
         // set some initial values, then begin
-        var prevContent = null;
 				var knowIsSame = false;
         var timerInterval = settings.minTimeout;
 
@@ -64,8 +63,6 @@
 					};
 				} 
 
-				var PeriodicalTimer = null; // Getting a handle on this for some reason
-
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
 				if(settings.type && !ajaxSettings.dataType) ajaxSettings.dataType = settings.type;
@@ -73,49 +70,37 @@
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = false;
 				ajaxSettings.success = function(data) {
-					if(knowIsSame || (prevContent || prevContent == "") && prevContent == data) {
+					if(knowIsSame) {
 						boostPeriod();
 					} else {
-						if(console) {
-							console.log("Change in data: old data is " + prevContent + " and new data is " + data);
-						}
-						prevContent = data;
 						timerInterval = settings.minTimeout;
 						if(callback) { 
 							callback(data); 
 						}
 					}
-					PeriodicalTimer = setTimeout(getdata, timerInterval);
 					if(settings.success) { settings.success(data); }
 				};
-				ajaxSettings.error = function (XMLHttpRequest, textStatus) { 
+				ajaxSettings.error = function (xhr, textStatus) { 
 					if(knowIsSame || textStatus == "notmodified") {
 						boostPeriod();
 					} else {
-						if(console) {
-							console.log("Resetting due to error: " + textStatus);
-						}
-						prevContent = null;
 						timerInterval = settings.minTimeout;
 					}
-					PeriodicalTimer = setTimeout(getdata, timerInterval);
-					if(settings.error) { settings.error(XMLHttpRequest, textStatus); }
+					if(settings.error) { settings.error(xhr, textStatus); }
 				};
 
-				var oldRawData = null;
-				ajaxSettings.dataFilter = function (data, type) {
-					if(settings.dataFilter) data = settings.dataFilter(data, type);
-					knowIsSame = false;
-					if(data) {
-						var dataStr = data;
-						if(ajaxSettings.dataType == "xml") {
-							dataStr = xml_content_string(data);
-						}
-						knowIsSame = (oldRawData && dataStr == oldRawData);
-						oldRawData = dataStr;
-					} 
-  				return data;
-				};
+				ajaxSettings.dataFilter = function() { 
+					var prevData = null;
+					return function(data, type) {
+						var respText = this.xhr().responseText;
+						knowIsSame = (respText != null && prevData != null && respText == prevData);
+						prevData = respText;
+
+						if(settings.dataFilter) data = settings.dataFilter(data, type);
+						return data;
+					};
+				}();
+				
 
 				function getdata() { $.ajax(ajaxSettings); }
 
