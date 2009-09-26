@@ -22,7 +22,7 @@
             url: url,               // URL of ajax request
 						cache: false,						// By default, don't allow caching
             method: 'GET',          // method; get or post
-            data: '',           		// array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+            data: '',								// array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
             minTimeout: 1000,       // starting value for the timeout in milliseconds
             maxTimeout: 8000,       // maximum length of time between requests
             multiplier: 2           // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
