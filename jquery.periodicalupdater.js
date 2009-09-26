@@ -15,25 +15,6 @@
  */
 
 (function($) {
-		// From http://www.hiteshagrawal.com/javascript/convert-xml-document-to-string-in-javascript
-		var xml_content_string = function(xmlData) {
-			if (window.ActiveXObject) {
-				//for IE
-				xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-				xmlDoc.async="false";
-				xmlDoc.loadXML(xmlData);
-				return xmlDoc.xml;
-			} else if (document.implementation && document.implementation.createDocument) {
-				//for Mozila
-				parser=new DOMParser();
-				xmlDoc=parser.parseFromString(xmlData,"text/xml");
-				return xmlDoc.xml;
-			} else {
-				// Punt!
-				return xmlData;
-			}
-		};
-
 		// Now back to our regularly scheduled work
     $.PeriodicalUpdater = function(url, options, callback){
 
@@ -48,8 +29,24 @@
         }, options);
         
         // set some initial values, then begin
-				var knowIsSame = false;
         var timerInterval = settings.minTimeout;
+
+				// Function to test if there was a change
+				var no_change = function() {
+					var prev = null;
+					return function(xhr) {
+						var is_same = true;
+						var response;
+						if(xhr.responseText != null) {
+							response = xhr.responseText;
+						} else if(xhr.responseXML != null) {
+							response = xhr.responseXML;
+						}
+						if(prev && response) is_same = (response == prev);
+						prev = response;
+						return is_same;
+					};
+				}();
 
 				// Function to boost the timer (nop unless multiplier > 1)
 				var boostPeriod = function() { return; };
@@ -70,7 +67,7 @@
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = false;
 				ajaxSettings.success = function(data) {
-					if(knowIsSame) {
+					if(no_change(this.xhr())) {
 						boostPeriod();
 					} else {
 						timerInterval = settings.minTimeout;
@@ -81,26 +78,13 @@
 					if(settings.success) { settings.success(data); }
 				};
 				ajaxSettings.error = function (xhr, textStatus) { 
-					if(knowIsSame || textStatus == "notmodified") {
+					if(textStatus == "notmodified" || no_change(xhr)) {
 						boostPeriod();
 					} else {
 						timerInterval = settings.minTimeout;
 					}
 					if(settings.error) { settings.error(xhr, textStatus); }
 				};
-
-				ajaxSettings.dataFilter = function() { 
-					var prevData = null;
-					return function(data, type) {
-						var respText = this.xhr().responseText;
-						knowIsSame = (respText != null && prevData != null && respText == prevData);
-						prevData = respText;
-
-						if(settings.dataFilter) data = settings.dataFilter(data, type);
-						return data;
-					};
-				}();
-				
 
 				function getdata() { $.ajax(ajaxSettings); }
 
