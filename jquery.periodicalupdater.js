@@ -15,6 +15,12 @@
  */
 
 (function($) {
+		function pu_log(msg) {
+			try {
+				console.log(msg);
+			} catch(err) {}
+		}
+
 		// Now back to our regularly scheduled work
 		$.PeriodicalUpdater = function(url, options, callback){
 
@@ -49,15 +55,40 @@
 				if(settings.sendData) ajaxSettings.data = settings.sendData;
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = true;
+
+				var remoteData = null;
+				var prevData = null;
+				
 				ajaxSettings.success = function(data) {
-					if(settings.success) { settings.success(data); }
+					pu_log("Successful run! (In 'success')");
+					remoteData = data;
 					timerInterval = settings.minTimeout;
-					if(callback) callback(data);
 				};
+
+				ajaxSettings.complete = function(xhr, success) {
+					pu_log("Status of call: " + success + " (In 'complete')");
+					if(success == "success") {
+						var rawData = xhr.responseText.trim();
+						if(prevData == rawData) {
+							boostPeriod();
+						} else {
+							timerInterval = settings.minTimeout;
+							prevData = rawData;
+							if(settings.success) { settings.success(remoteData); }
+							if(callback) callback(remoteData);
+						}
+					}
+					remoteData = null;
+					setTimeout(getdata, timerInterval);
+				}
+
+
 				ajaxSettings.error = function (xhr, textStatus) { 
+					pu_log("Error message: " + textStatus + " (In 'error')");
 					if(textStatus == "notmodified") {
 						boostPeriod();
 					} else {
+						prevData = null;
 						timerInterval = settings.minTimeout;
 					}
 					if(settings.error) { settings.error(xhr, textStatus); }
