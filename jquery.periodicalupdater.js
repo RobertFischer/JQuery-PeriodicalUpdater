@@ -68,7 +68,7 @@
 				ajaxSettings.complete = function(xhr, success) {
 					pu_log("Status of call: " + success + " (In 'complete')");
 					if(success == "success") {
-						var rawData = xhr.responseText.trim();
+						var rawData = $.trim(xhr.responseText);
 						if(prevData == rawData) {
 							boostPeriod();
 						} else {
