@@ -67,13 +67,14 @@
 
 				ajaxSettings.complete = function(xhr, success) {
 					pu_log("Status of call: " + success + " (In 'complete')");
-					if(success == "success") {
+					if(success == "success" || success == "notmodified") {
 						var rawData = $.trim(xhr.responseText);
 						if(prevData == rawData) {
 							boostPeriod();
 						} else {
 							timerInterval = settings.minTimeout;
 							prevData = rawData;
+							if(remoteData == null) remoteData = rawData;
 							if(settings.success) { settings.success(remoteData); }
 							if(callback) callback(remoteData);
 						}
