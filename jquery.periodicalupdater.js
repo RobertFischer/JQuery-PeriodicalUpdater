@@ -57,17 +57,14 @@
 				ajaxSettings.ifModified = true;
 
 				// Create the function to get data
-				var getdata = function() { 
-					$.ajax(ajaxSettings); 
-				};
-				if(typeof(settings.data) == 'function') {
-					var oldgetdata = getdata;
-					getdata = function() { 
+				function getdata() {
+					if(typeof(settings.data) == 'function') {
 						ajaxSettings.data = settings.data();
-						oldgetdata();
-					};
+					}
+					$.ajax(ajaxSettings); 
 				}
 
+				// Implement the tricky behind logic
 				var remoteData = null;
 				var prevData = null;
 				
