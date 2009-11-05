@@ -20,6 +20,11 @@ $.PeriodicalUpdater('/path/to/service', {
 	// Handle the new data (only called when there was a change)
 });
 
+The "data" value can be one of three things:
+  * A scalar, in which case it will be used constantly.
+  * A map/object, in which case it will be turned into key/value pairs by jQuery
+  * An anonymous function, in which case it will be executed before each AJAX call
+
 Any other $.ajax configuration option can be passed to the setting map.  The 
 only exception is the flag that treats modifications as errors. That’s always 
 going to be 'true'.
