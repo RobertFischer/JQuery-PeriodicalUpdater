@@ -57,6 +57,7 @@
 				ajaxSettings.ifModified = true;
 
 				// Create the function to get data
+				// TODO It'd be nice to do the options.data check once (a la boostPeriod)
 				function getdata() {
 					if(typeof(options.data) == 'function') {
 						ajaxSettings.data = options.data();
