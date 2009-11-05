@@ -61,6 +61,9 @@
 				function getdata() {
 					if(typeof(options.data) == 'function') {
 						ajaxSettings.data = options.data();
+						if(ajaxSettings.data) {
+							ajaxSettings.data = ajaxSettings.data.toString();
+						}
 					}
 					$.ajax(ajaxSettings); 
 				}
