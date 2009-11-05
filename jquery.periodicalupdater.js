@@ -56,6 +56,18 @@
 				ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
 				ajaxSettings.ifModified = true;
 
+				// Create the function to get data
+				var getdata = function() { 
+					$.ajax(ajaxSettings); 
+				};
+				if(typeof(settings.data) == 'function') {
+					var oldgetdata = getdata;
+					getdata = function() { 
+						ajaxSettings.data = settings.data();
+						oldgetdata();
+					};
+				}
+
 				var remoteData = null;
 				var prevData = null;
 				
@@ -94,17 +106,6 @@
 					}
 					if(settings.error) { settings.error(xhr, textStatus); }
 				};
-
-				var getdata = function() { 
-					$.ajax(ajaxSettings); 
-				};
-				if(typeof(settings.data) == 'function') {
-					var oldgetdata = getdata;
-					getdata = function() { 
-						ajaxSettings.data = settings.data();
-						oldgetdata();
-					};
-				}
 
 				// Make the first call
 				$(function() { getdata(); });
