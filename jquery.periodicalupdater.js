@@ -59,13 +59,15 @@
 				// Create the function to get data
 				// TODO It'd be nice to do the options.data check once (a la boostPeriod)
 				function getdata() {
+					var toSend = ajaxSettings;
 					if(typeof(options.data) == 'function') {
-						ajaxSettings.data = options.data();
-						if(ajaxSettings.data) {
-							ajaxSettings.data = ajaxSettings.data.toString();
+						var toSend = jQuery.extend(true, toSend, { });
+						toSend.data = options.data();
+						if(toSend.data) {
+							toSend.data = toSend.data.toString();
 						}
 					}
-					$.ajax(ajaxSettings); 
+					$.ajax(toSend); 
 				}
 
 				// Implement the tricky behind logic
