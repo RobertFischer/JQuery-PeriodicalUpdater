@@ -58,8 +58,8 @@
 
 				// Create the function to get data
 				function getdata() {
-					if(typeof(settings.data) == 'function') {
-						ajaxSettings.data = settings.data();
+					if(typeof(options.data) == 'function') {
+						ajaxSettings.data = options.data();
 					}
 					$.ajax(ajaxSettings); 
 				}
