@@ -95,7 +95,16 @@
 					if(settings.error) { settings.error(xhr, textStatus); }
 				};
 
-				function getdata() { $.ajax(ajaxSettings); }
+				var getdata = function() { 
+					$.ajax(ajaxSettings); 
+				};
+				if(typeof(settings.data) == 'function') {
+					var oldgetdata = getdata;
+					getdata = function() { 
+						ajaxSettings.data = settings.data();
+						oldgetdata();
+					};
+				}
 
 				// Make the first call
 				$(function() { getdata(); });
