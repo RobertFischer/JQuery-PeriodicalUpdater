@@ -1,12 +1,16 @@
 /**
  * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
  *
- * Smokejumper Version by Robert Fischer, Smokejumper IT
- * Based on version from http://www.360innovate.co.uk
+ * $400 USD Version
+ * Based on previous work from 360innovate & Robert Fischer
+ * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
+ * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
  *
  * Copyright (c) 2009 by the following:
- *	 * Robert Fischer (http://smokejumperit.com)
- *	 * 360innovate (http://www.360innovate.co.uk)
+ *  Frank White (http://customcode.info)
+ *  Robert Fischer (http://smokejumperit.com)
+ *  360innovate (http://www.360innovate.co.uk)
+ *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -25,29 +29,32 @@
 		$.PeriodicalUpdater = function(url, options, callback){
 
 				var settings = jQuery.extend(true, {
-					url: url,								// URL of ajax request
-					cache: false,						// By default, don't allow caching
-					method: 'GET',					// method; get or post
-					data: '',								// array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
-					minTimeout: 1000,				// starting value for the timeout in milliseconds
-					maxTimeout: 8000,				// maximum length of time between requests
-					multiplier: 2						// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+					url: url,					// URL of ajax request
+					cache: false,				// By default, don't allow caching
+					method: 'GET',				// method; get or post
+					data: '',				    // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+					minTimeout: 1000,		    // starting value for the timeout in milliseconds
+					maxTimeout: 8000,		    // maximum length of time between requests
+					multiplier: 2,			    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+                    maxCalls: 0,                // maximum number of calls. 0 = no limit.
 				}, options);
-				
+
 				// set some initial values, then begin
 				var timerInterval = settings.minTimeout;
+                var maxCalls      = settings.maxCalls;
+                var calls         = 0;
 
 				// Function to boost the timer (nop unless multiplier > 1)
 				var boostPeriod = function() { return; };
 				if(settings.multiplier > 1) {
-					boostPeriod = function() { 
+					boostPeriod = function() {
 						timerInterval = timerInterval * settings.multiplier;
-						
+
 						if(timerInterval > settings.maxTimeout) {
 								timerInterval = settings.maxTimeout;
 						}
 					};
-				} 
+				}
 
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
@@ -59,7 +66,7 @@
 				// Create the function to get data
 				// TODO It'd be nice to do the options.data check once (a la boostPeriod)
 				function getdata() {
-					var toSend = jQuery.extend(true, {}, ajaxSettings); // jQuery screws with what you pass in
+					var toSend  = jQuery.extend(true, {}, ajaxSettings); // jQuery screws with what you pass in
 					if(typeof(options.data) == 'function') {
 						toSend.data = options.data();
 						if(toSend.data) {
@@ -69,13 +76,23 @@
 							}
 						}
 					}
-					$.ajax(toSend); 
+
+                    if(maxCalls == 0)
+                    {
+                        $.ajax(toSend);
+                    }
+
+                    if(maxCalls > 0 && calls < maxCalls)
+                    {
+                        $.ajax(toSend);
+                        calls++;
+                    }
 				}
 
 				// Implement the tricky behind logic
 				var remoteData = null;
 				var prevData = null;
-				
+
 				ajaxSettings.success = function(data) {
 					pu_log("Successful run! (In 'success')");
 					remoteData = data;
@@ -101,7 +118,7 @@
 				}
 
 
-				ajaxSettings.error = function (xhr, textStatus) { 
+				ajaxSettings.error = function (xhr, textStatus) {
 					pu_log("Error message: " + textStatus + " (In 'error')");
 					if(textStatus == "notmodified") {
 						boostPeriod();
@@ -114,5 +131,5 @@
 
 				// Make the first call
 				$(function() { getdata(); });
-		};	
+		};
 })(jQuery);
