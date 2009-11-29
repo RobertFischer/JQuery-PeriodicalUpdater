@@ -15,7 +15,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
  *
- * Version: 2.0
+ * Version: 3.0
  */
 
 (function($) {
@@ -103,6 +103,11 @@
 					pu_log("Status of call: " + success + " (In 'complete')");
 					if(success == "success" || success == "notmodified") {
 						var rawData = $.trim(xhr.responseText);
+                        if(rawData == 'STOP_AJAX_CALLS')
+                        {
+                            maxCalls = -1;
+                            return;
+                        }
 						if(prevData == rawData) {
 							boostPeriod();
 						} else {
