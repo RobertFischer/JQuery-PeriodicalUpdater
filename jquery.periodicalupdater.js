@@ -5,6 +5,7 @@
  * Based on previous work from 360innovate & Robert Fischer
  * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
+ * Last Modified: Thursday, December 10, 2009 / 02:18 PM GMT+1 (fwhite)
  *
  * Copyright (c) 2009 by the following:
  *  Frank White (http://customcode.info)
@@ -16,6 +17,7 @@
  * http://www.gnu.org/licenses/gpl.html
  *
  * Version: 3.0
+ *
  */
 
 (function($) {
@@ -114,6 +116,7 @@
 							timerInterval = settings.minTimeout;
 							prevData = rawData;
 							if(remoteData == null) remoteData = rawData;
+                            if(ajaxSettings.dataType == 'json') remoteData = JSON.parse(remoteData);
 							if(settings.success) { settings.success(remoteData); }
 							if(callback) callback(remoteData);
 						}
