@@ -5,7 +5,7 @@
  * Based on previous work from 360innovate & Robert Fischer
  * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
- * Last Modified: Thursday, December 10, 2009 / 02:18 PM GMT+1 (fwhite)
+ * Last Modified: Wednesday, December 16, 2009 / 11:30 AM GMT+1 (fwhite)
  *
  * Copyright (c) 2009 by the following:
  *  Frank White (http://customcode.info)
@@ -39,12 +39,15 @@
 					maxTimeout: 8000,		    // maximum length of time between requests
 					multiplier: 2,			    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
                     maxCalls: 0,                // maximum number of calls. 0 = no limit.
+                    autoStop: 0                 // automatically stop requests after this many returns of the same data. 0 = disabled
 				}, options);
 
 				// set some initial values, then begin
 				var timerInterval = settings.minTimeout;
                 var maxCalls      = settings.maxCalls;
+                var autoStop      = settings.autoStop;
                 var calls         = 0;
+                var noChange      = 0;
 
 				// Function to boost the timer (nop unless multiplier > 1)
 				var boostPeriod = function() { return; };
@@ -92,13 +95,13 @@
 				}
 
 				// Implement the tricky behind logic
-				var remoteData = null;
-				var prevData = null;
+				var remoteData  = null;
+				var prevData    = null;
 
 				ajaxSettings.success = function(data) {
 					pu_log("Successful run! (In 'success')");
-					remoteData = data;
-					timerInterval = settings.minTimeout;
+					remoteData      = data;
+					timerInterval   = settings.minTimeout;
 				};
 
 				ajaxSettings.complete = function(xhr, success) {
@@ -111,10 +114,20 @@
                             return;
                         }
 						if(prevData == rawData) {
+                            if(autoStop > 0)
+                            {
+                                noChange++;
+                                if(noChange == autoStop)
+                                {
+                                    maxCalls = -1;
+                                    return;
+                                }
+                            }
 							boostPeriod();
 						} else {
-							timerInterval = settings.minTimeout;
-							prevData = rawData;
+                            noChange        = 0;
+                            timerInterval   = settings.minTimeout;
+							prevData        = rawData;
 							if(remoteData == null) remoteData = rawData;
                             if(ajaxSettings.dataType == 'json') remoteData = JSON.parse(remoteData);
 							if(settings.success) { settings.success(remoteData); }
