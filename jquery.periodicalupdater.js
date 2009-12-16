@@ -1,11 +1,8 @@
 /**
  * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
  *
- * $400 USD Version
- * Based on previous work from 360innovate & Robert Fischer
  * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
- * Last Modified: Wednesday, December 16, 2009 / 11:30 AM GMT+1 (fwhite)
  *
  * Copyright (c) 2009 by the following:
  *  Frank White (http://customcode.info)
@@ -32,22 +29,22 @@
 
 				var settings = jQuery.extend(true, {
 					url: url,					// URL of ajax request
-					cache: false,				// By default, don't allow caching
-					method: 'GET',				// method; get or post
-					data: '',				    // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
-					minTimeout: 1000,		    // starting value for the timeout in milliseconds
-					maxTimeout: 8000,		    // maximum length of time between requests
-					multiplier: 2,			    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
-                    maxCalls: 0,                // maximum number of calls. 0 = no limit.
-                    autoStop: 0                 // automatically stop requests after this many returns of the same data. 0 = disabled
+					cache: false,		  // By default, don't allow caching
+					method: 'GET',		// method; get or post
+					data: '',				  // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+					minTimeout: 1000,	// starting value for the timeout in milliseconds
+					maxTimeout: 8000,	// maximum length of time between requests
+					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+          maxCalls: 0,      // maximum number of calls. 0 = no limit.
+          autoStop: 0       // automatically stop requests after this many returns of the same data. 0 = disabled
 				}, options);
 
 				// set some initial values, then begin
 				var timerInterval = settings.minTimeout;
-                var maxCalls      = settings.maxCalls;
-                var autoStop      = settings.autoStop;
-                var calls         = 0;
-                var noChange      = 0;
+        var maxCalls      = settings.maxCalls;
+        var autoStop      = settings.autoStop;
+        var calls         = 0;
+        var noChange      = 0;
 
 				// Function to boost the timer (nop unless multiplier > 1)
 				var boostPeriod = function() { return; };
@@ -82,16 +79,12 @@
 						}
 					}
 
-                    if(maxCalls == 0)
-                    {
-                        $.ajax(toSend);
-                    }
-
-                    if(maxCalls > 0 && calls < maxCalls)
-                    {
-                        $.ajax(toSend);
-                        calls++;
-                    }
+          if(maxCalls == 0) {
+            $.ajax(toSend);
+          } else if(maxCalls > 0 && calls < maxCalls) {
+            $.ajax(toSend);
+            calls++;
+          }
 				}
 
 				// Implement the tricky behind logic
