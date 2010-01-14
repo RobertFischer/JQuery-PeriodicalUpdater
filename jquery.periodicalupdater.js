@@ -122,7 +122,9 @@
                             timerInterval   = settings.minTimeout;
 							prevData        = rawData;
 							if(remoteData == null) remoteData = rawData;
-                            if(ajaxSettings.dataType == 'json') remoteData = JSON.parse(remoteData);
+              if(ajaxSettings.dataType == 'json') {
+                remoteData = JSON.parse(remoteData);
+              }
 							if(settings.success) { settings.success(remoteData); }
 							if(callback) callback(remoteData);
 						}
