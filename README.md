@@ -28,9 +28,12 @@ The "data" value can be one of three things:
 * A map/object, in which case it will be turned into key/value pairs by jQuery
 * An anonymous function, in which case it will be executed before each AJAX call
 
-Any other $.ajax configuration option can be passed to the setting map.  The
-only exception is the flag that treats modifications as errors. That’s always
+Any of the other standard $.ajax configuration options can be passed to the setting map.  
+The only exception is the flag that treats modifications as errors. That’s always
 going to be 'true'.
+
+The function call returns a handle.  You can call `.stop()` on this handle in order to stop
+the updating and ignore any subsequent responses.
 
 More info, including advantages over 360innovate version:
 
