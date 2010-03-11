@@ -18,7 +18,7 @@
  */
 
 (function($) {
-		function pu_log(msg) {
+    var pu_log = function(msg) {
 			try {
 				console.log(msg);
 			} catch(err) {}
@@ -26,7 +26,6 @@
 
 		// Now back to our regularly scheduled work
 		$.PeriodicalUpdater = function(url, options, callback){
-
 				var settings = jQuery.extend(true, {
 					url: url,					// URL of ajax request
 					cache: false,		  // By default, don't allow caching
@@ -37,7 +36,7 @@
 					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
           maxCalls: 0,      // maximum number of calls. 0 = no limit.
           autoStop: 0       // automatically stop requests after this many returns of the same data. 0 = disabled
-				}, options);
+        }, options);
 
 				// set some initial values, then begin
 				var timerInterval = settings.minTimeout;
@@ -46,17 +45,16 @@
         var calls         = 0;
         var noChange      = 0;
 
-				// Function to boost the timer (nop unless multiplier > 1)
-				var boostPeriod = function() { return; };
-				if(settings.multiplier > 1) {
-					boostPeriod = function() {
+				// Function to boost the timer 
+        var boostPeriod = function() {
+          if(settings.multiplier > 1) {
 						timerInterval = timerInterval * settings.multiplier;
 
 						if(timerInterval > settings.maxTimeout) {
 								timerInterval = settings.maxTimeout;
 						}
-					};
-				}
+					}
+				};
 
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
@@ -99,27 +97,25 @@
 
 				ajaxSettings.complete = function(xhr, success) {
 					pu_log("Status of call: " + success + " (In 'complete')");
+          if(maxCalls == -1) return;
 					if(success == "success" || success == "notmodified") {
 						var rawData = $.trim(xhr.responseText);
-                        if(rawData == 'STOP_AJAX_CALLS')
-                        {
-                            maxCalls = -1;
-                            return;
-                        }
+            if(rawData == 'STOP_AJAX_CALLS') {
+              maxCalls = -1;
+              return;
+            }
 						if(prevData == rawData) {
-                            if(autoStop > 0)
-                            {
-                                noChange++;
-                                if(noChange == autoStop)
-                                {
-                                    maxCalls = -1;
-                                    return;
-                                }
-                            }
+              if(autoStop > 0) {
+                noChange++;
+                if(noChange == autoStop) {
+                  maxCalls = -1;
+                  return;
+                }
+              }
 							boostPeriod();
 						} else {
-                            noChange        = 0;
-                            timerInterval   = settings.minTimeout;
+              noChange        = 0;
+              timerInterval   = settings.minTimeout;
 							prevData        = rawData;
 							if(remoteData == null) remoteData = rawData;
               if(ajaxSettings.dataType == 'json') {
@@ -147,5 +143,13 @@
 
 				// Make the first call
 				$(function() { getdata(); });
-		};
+
+        var handle = {
+          stop: function() {
+            maxCalls = -1;
+            return;
+          }
+        };
+        return handle;
+    };
 })(jQuery);
