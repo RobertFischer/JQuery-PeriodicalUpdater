@@ -23,15 +23,15 @@ Usage:
     });
 
 The "data" value can be one of three things:
-  * A scalar, in which case it will be used constantly.
-  * A map/object, in which case it will be turned into key/value pairs by jQuery
-  * An anonymous function, in which case it will be executed before each AJAX call
+* A scalar, in which case it will be used constantly.
+* A map/object, in which case it will be turned into key/value pairs by jQuery
+* An anonymous function, in which case it will be executed before each AJAX call
 
 Any other $.ajax configuration option can be passed to the setting map.  The
 only exception is the flag that treats modifications as errors. That’s always
 going to be 'true'.
 
 More info, including advantages over 360innovate version:
-  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater/
+* http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater/
 
 See the source file for license terms.
