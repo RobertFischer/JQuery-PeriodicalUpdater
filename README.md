@@ -1,4 +1,4 @@
-A port of Prototype's Ajax.PeriodicalUpdater function to jQuery.
+A port of Prototype's `Ajax.PeriodicalUpdater` function to jQuery.
 
 Basically, this function polls some remote service at fairly regular internvals,
 and (optionally) processes the result via a callback.  The period of calls will
@@ -9,18 +9,18 @@ reduces the load on the server naturally.   The first Ajax call happens as a pag
 anywhere on the page.
 
 Usage:
-$.PeriodicalUpdater('/path/to/service', {
-	method: 'get',          // method; get or post
-	data: '', 		          // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
-	minTimeout: 1000,       // starting value for the timeout in milliseconds
-	maxTimeout: 8000,       // maximum length of time between requests
-	multiplier: 2,          // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
-	type: 'text',           // response type - text, xml, json, etc.  See $.ajax config options
-  maxCalls: 0,            // maximum number of calls. 0 = no limit.
-  autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
-}, function(data) {
-	// Handle the new data (only called when there was a change)
-});
+    $.PeriodicalUpdater('/path/to/service', {
+        method: 'get',          // method; get or post
+	      data: '', 		          // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+	      minTimeout: 1000,       // starting value for the timeout in milliseconds
+	      maxTimeout: 8000,       // maximum length of time between requests
+	      multiplier: 2,          // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+	      type: 'text',           // response type - text, xml, json, etc.  See $.ajax config options
+        maxCalls: 0,            // maximum number of calls. 0 = no limit.
+        autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
+    }, function(data) {
+	      // Handle the new data (only called when there was a change)
+    });
 
 The "data" value can be one of three things:
   * A scalar, in which case it will be used constantly.
@@ -32,6 +32,6 @@ only exception is the flag that treats modifications as errors. That’s always
 going to be 'true'.
 
 More info, including advantages over 360innovate version:
-* http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater/
+  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater/
 
 See the source file for license terms.
