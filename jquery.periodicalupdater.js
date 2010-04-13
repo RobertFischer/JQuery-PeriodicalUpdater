@@ -39,20 +39,34 @@
         }, options);
 
 				// set some initial values, then begin
+				var timer         = null;
 				var timerInterval = settings.minTimeout;
         var maxCalls      = settings.maxCalls;
         var autoStop      = settings.autoStop;
         var calls         = 0;
         var noChange      = 0;
 
+        var reset_timer = function(interval) {
+          if (timer != null) {
+            clearTimeout(timer);
+          }
+          timerInterval = interval;
+					pu_log('resetting timer to '+ timerInterval +'.');
+          timer = setTimeout(getdata, timerInterval);
+        }
+
 				// Function to boost the timer 
         var boostPeriod = function() {
           if(settings.multiplier > 1) {
+            before = timerInterval;
 						timerInterval = timerInterval * settings.multiplier;
 
 						if(timerInterval > settings.maxTimeout) {
 								timerInterval = settings.maxTimeout;
 						}
+						after = timerInterval;
+						pu_log('adjusting timer from '+ before +' to '+ after +'.');
+						reset_timer(timerInterval);
 					}
 				};
 
@@ -92,7 +106,7 @@
 				ajaxSettings.success = function(data) {
 					pu_log("Successful run! (In 'success')");
 					remoteData      = data;
-					timerInterval   = settings.minTimeout;
+					// timerInterval   = settings.minTimeout;
 				};
 
 				ajaxSettings.complete = function(xhr, success) {
@@ -115,18 +129,17 @@
 							boostPeriod();
 						} else {
               noChange        = 0;
-              timerInterval   = settings.minTimeout;
+              reset_timer(settings.minTimeout);
 							prevData        = rawData;
 							if(remoteData == null) remoteData = rawData;
               if(ajaxSettings.dataType == 'json') {
                 remoteData = JSON.parse(remoteData);
               }
-							if(settings.success) { settings.success(remoteData); }
-							if(callback) callback(remoteData);
+							if(settings.success) { settings.success(remoteData, success, xhr); }
+							if(callback) callback(remoteData, success, xhr);
 						}
 					}
 					remoteData = null;
-					setTimeout(getdata, timerInterval);
 				}
 
 
@@ -136,13 +149,13 @@
 						boostPeriod();
 					} else {
 						prevData = null;
-						timerInterval = settings.minTimeout;
+						reset_timer(settings.minTimeout);
 					}
 					if(settings.error) { settings.error(xhr, textStatus); }
 				};
 
 				// Make the first call
-				$(function() { getdata(); });
+				$(function() { reset_timer(timerInterval); });
 
         var handle = {
           stop: function() {
