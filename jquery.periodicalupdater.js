@@ -110,7 +110,7 @@
 				};
 
 				ajaxSettings.complete = function(xhr, success) {
-					pu_log("Status of call: " + success + " (In 'complete')");
+					//pu_log("Status of call: " + success + " (In 'complete')");
           if(maxCalls == -1) return;
 					if(success == "success" || success == "notmodified") {
 						var rawData = $.trim(xhr.responseText);
@@ -144,7 +144,7 @@
 
 
 				ajaxSettings.error = function (xhr, textStatus) {
-					pu_log("Error message: " + textStatus + " (In 'error')");
+					//pu_log("Error message: " + textStatus + " (In 'error')");
 					if(textStatus == "notmodified") {
 						boostPeriod();
 					} else {
