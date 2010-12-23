@@ -25,7 +25,7 @@
     }
 
     // Now back to our regularly scheduled work
-    $.PeriodicalUpdater = function(url, options, callback){
+    $.PeriodicalUpdater = function(url, options, callback, autoStopCallback){
       var settings = jQuery.extend(true, {
           url: url,         // URL of ajax request
           cache: false,     // By default, don't allow caching
@@ -123,6 +123,7 @@
                 noChange++;
                 if(noChange == autoStop) {
                   maxCalls = -1;
+									if(autoStopCallback) autoStopCallback(noChange);
                   return;
                 }
               }
