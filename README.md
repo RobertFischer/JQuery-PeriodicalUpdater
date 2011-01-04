@@ -11,15 +11,15 @@ anywhere on the page.
 Usage:
     $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
-	      data: '', 		          // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
-	      minTimeout: 1000,       // starting value for the timeout in milliseconds
-	      maxTimeout: 8000,       // maximum length of time between requests
-	      multiplier: 2,          // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
-	      type: 'text',           // response type - text, xml, json, etc.  See $.ajax config options
+        data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+        minTimeout: 1000,       // starting value for the timeout in milliseconds
+        maxTimeout: 8000,       // maximum length of time between requests
+        multiplier: 2,          // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+        type: 'text',           // response type - text, xml, json, etc.  See $.ajax config options
         maxCalls: 0,            // maximum number of calls. 0 = no limit.
         autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
     }, function(data) {
-	      // Handle the new data (only called when there was a change)
+        // Handle the new data (only called when there was a change)
     });
 
 The "data" value can be one of three things:
@@ -33,7 +33,8 @@ The only exception is the flag that treats modifications as errors. That’s alw
 going to be 'true'.
 
 The function call returns a handle.  You can call `.stop()` on this handle in order to stop
-the updating and ignore any subsequent responses.
+the updating and ignore any subsequent responses.  If the maximum number of calls, `.stop()`, or 
+the autoStop has been triggered, you can restart the updater using `.restart()` on the handle.
 
 More info, including advantages over 360innovate version:
 
