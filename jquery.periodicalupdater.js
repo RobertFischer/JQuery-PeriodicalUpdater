@@ -43,7 +43,7 @@
         var autoStop      = settings.autoStop;
         var calls         = 0;
         var noChange      = 0;
-				var originalMaxCalls = maxCalls;
+        var originalMaxCalls = maxCalls;
 
         var reset_timer = function(interval) {
           if (timer != null) {
@@ -122,7 +122,7 @@
                 noChange++;
                 if(noChange == autoStop) {
                   maxCalls = -1;
-									if(autoStopCallback) autoStopCallback(noChange);
+                  if(autoStopCallback) autoStopCallback(noChange);
                   return;
                 }
               }
@@ -160,12 +160,12 @@
         $(function() { reset_timer(timerInterval); });
 
         var handle = {
-					restart: function() {
-						maxCalls = originalMaxCalls;
-						calls = 0;
-						reset_timer(timerInterval);
-						return;
-					},
+          restart: function() {
+            maxCalls = originalMaxCalls;
+              calls = 0;
+              reset_timer(timerInterval);
+              return;
+            },
           stop: function() {
             maxCalls = -1;
             return;
