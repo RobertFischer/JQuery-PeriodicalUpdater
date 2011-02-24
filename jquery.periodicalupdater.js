@@ -56,7 +56,7 @@
 
         // Function to boost the timer 
         var boostPeriod = function() {
-          if(settings.multiplier > 1) {
+          if(settings.multiplier >= 1) {
             before = timerInterval;
             timerInterval = timerInterval * settings.multiplier;
 
