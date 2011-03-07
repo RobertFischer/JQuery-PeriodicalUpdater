@@ -43,7 +43,7 @@
         var autoStop      = settings.autoStop;
         var calls         = 0;
         var noChange      = 0;
-				var originalMaxCalls = maxCalls;
+        var originalMaxCalls = maxCalls;
 
         var reset_timer = function(interval) {
           if (timer != null) {
@@ -56,7 +56,7 @@
 
         // Function to boost the timer 
         var boostPeriod = function() {
-          if(settings.multiplier > 1) {
+          if(settings.multiplier >= 1) {
             before = timerInterval;
             timerInterval = timerInterval * settings.multiplier;
 
@@ -135,7 +135,7 @@
                 noChange++;
                 if(noChange == autoStop) {
                   maxCalls = -1;
-									if(autoStopCallback) autoStopCallback(noChange);
+                  if(autoStopCallback) autoStopCallback(noChange);
                   return;
                 }
               }
