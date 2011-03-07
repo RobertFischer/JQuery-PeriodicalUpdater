@@ -124,17 +124,17 @@
         ajaxSettings.complete = function(xhr, success) {
           //pu_log("Status of call: " + success + " (In 'complete')");
           if(maxCalls == -1) return;
-          if(success == "success" || success == "notmodified") {
+          if(success == "success" /*|| success == "notmodified"*/) {
             var rawData = $.trim(xhr.responseText);
             if(rawData == 'STOP_AJAX_CALLS') {
-              maxCalls = -1;
+							handle.stop();
               return;
             }
             if(prevData == rawData) {
               if(autoStop > 0) {
                 noChange++;
                 if(noChange == autoStop) {
-                  maxCalls = -1;
+									handle.stop();
                   if(autoStopCallback) autoStopCallback(noChange);
                   return;
                 }
