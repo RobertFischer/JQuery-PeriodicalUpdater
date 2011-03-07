@@ -76,6 +76,19 @@
         ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
         ajaxSettings.ifModified = true;
 
+        var handle = {
+					restart: function() {
+						maxCalls = originalMaxCalls;
+						calls = 0;
+						reset_timer(timerInterval);
+						return;
+					},
+          stop: function() {
+            maxCalls = -1;
+            return;
+          }
+        };
+
         // Create the function to get data
         // TODO It'd be nice to do the options.data check once (a la boostPeriod)
         function getdata() {
@@ -137,8 +150,8 @@
               if((ajaxSettings.dataType === 'json') && (typeof(remoteData) === 'string')) {
                 remoteData = JSON.parse(remoteData);
               }
-              if(settings.success) { settings.success(remoteData, success, xhr); }
-              if(callback) callback(remoteData, success, xhr);
+              if(settings.success) { settings.success(remoteData, success, xhr, handle); }
+              if(callback) callback(remoteData, success, xhr, handle);
             }
           }
           remoteData = null;
@@ -159,18 +172,6 @@
         // Make the first call
         $(function() { reset_timer(timerInterval); });
 
-        var handle = {
-					restart: function() {
-						maxCalls = originalMaxCalls;
-						calls = 0;
-						reset_timer(timerInterval);
-						return;
-					},
-          stop: function() {
-            maxCalls = -1;
-            return;
-          }
-        };
         return handle;
     };
 })(jQuery);
