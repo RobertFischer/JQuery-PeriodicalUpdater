@@ -33,7 +33,8 @@
       multiplier : 2,
       maxCalls : 0,
       autoStop : 0,
-      boostPeriod : null
+      boostPeriod : null,
+      boostWhenNotModified : true
     };
 
     // set some initial values, then begin
@@ -148,20 +149,22 @@
     };
 
     ajaxSettings.complete = function(xhr, success) {
-      //pu_log("Status of call: " + success + " (In 'complete')");
-      if(maxCalls == -1) return;
-      if(success == "success" || success == "notmodified") {
+      // pu_log("Status of call: " + success + " (In 'complete')");
+      if (maxCalls == -1)
+        return;
+      if (success == "success" || success == "notmodified") {
         var rawData = $.trim(xhr.responseText);
-        if(rawData == 'STOP_AJAX_CALLS') {
+        if (rawData == 'STOP_AJAX_CALLS') {
           handle.stop();
           return;
         }
-        if(prevData == rawData) {
-          if(autoStop > 0) {
+        if (prevData == rawData) {
+          if (autoStop > 0) {
             noChange++;
-            if(noChange == autoStop) {
+            if (noChange == autoStop) {
               handle.stop();
-              if(autoStopCallback) autoStopCallback(noChange);
+              if (autoStopCallback)
+                autoStopCallback(noChange);
               return;
             }
           }
@@ -171,29 +174,46 @@
             reset_timer(boostPeriod(timerInterval));
           }
         } else {
-          noChange        = 0;
-          reset_timer(settings.minTimeout);
-          prevData        = rawData;
-          if(remoteData == null) remoteData = rawData;
-          // jQuery 1.4+ $.ajax() automatically converts "data" into a JS Object for "type:json" requests now
-          // For compatibility with 1.4+ and pre1.4 jQuery only try to parse actual strings, skip when remoteData is already an Object
-          if((ajaxSettings.dataType === 'json') && (typeof(remoteData) === 'string')) {
+          noChange = 0;
+          if (settings.boostWhenNotModified) {
+            if (settings.boostPeriod != null) {
+              reset_timer(settings.boostPeriod.call(this, timerInterval));
+            } else {
+              reset_timer(boostPeriod(timerInterval));
+            }
+          } else {
+            reset_timer(settings.minTimeout);
+          }
+          prevData = rawData;
+          if (remoteData == null)
+            remoteData = rawData;
+          // jQuery 1.4+ $.ajax() automatically converts "data" into a JS Object
+          // for "type:json" requests now
+          // For compatibility with 1.4+ and pre1.4 jQuery only try to parse
+          // actual strings, skip when remoteData is already an Object
+          if ((ajaxSettings.dataType === 'json')
+              && (typeof (remoteData) === 'string')) {
             remoteData = JSON.parse(remoteData);
           }
-          if(settings.success) { settings.success(remoteData, success, xhr, handle); }
-          if(callback) callback(remoteData, success, xhr, handle);
+          if (settings.success) {
+            settings.success(remoteData, success, xhr, handle);
+          }
+          if (callback)
+            callback(remoteData, success, xhr, handle);
         }
       }
       remoteData = null;
     }
 
-    ajaxSettings.error = function (xhr, textStatus) {
-      //pu_log("Error message: " + textStatus + " (In 'error')");
-      if(textStatus != "notmodified") {
+    ajaxSettings.error = function(xhr, textStatus) {
+      // pu_log("Error message: " + textStatus + " (In 'error')");
+      if (textStatus != "notmodified") {
         prevData = null;
         reset_timer(settings.minTimeout);
       }
-      if(settings.error) { settings.error(xhr, textStatus); }
+      if (settings.error) {
+        settings.error(xhr, textStatus);
+      }
     };
 
     // Make the first call
