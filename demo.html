@@ -5,9 +5,7 @@
 <script src="./jquery.periodicalupdater.js"></script>
 </head>
 <body>
-  <p>This is a demo of the JQuery PeriodicalUpdater.  For more information, see the <a href="http://github.com/RobertFischer/JQuery-PeriodicalUpdater/raw/master/README">README</a>.</p>
-
-  <div id='curtime'></div>
+  <p>This is a demo of the JQuery PeriodicalUpdater.  For more information, see the <a href="https://github.com/Polzme/JQuery-PeriodicalUpdater/blob/master/README.md">README</a>.</p>
 
   <script>
 
@@ -37,12 +35,12 @@
       boostWhenNotModified: true,
       cache : false
     }, function(data, success, xhr, handle) {
-      $('#curtime').html($('#curtime').html()+data.curtime);
+      $('#area').html($('#area').html()+' '+data.value);
     });
 
   </script>
 
-  <p>Developed by Robert Fischer of <a href="http://smokejumperit.com">Smokejumper IT</a>.</p>
+  <div id='area'></div>
 
 </body>
 </html>
