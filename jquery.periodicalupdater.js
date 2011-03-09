@@ -69,6 +69,7 @@
         handle.stop();
         return;
       }
+
       if (interval <= 0) {
         pu_log("interval is less or equal to zero");
         handle.stop();
