@@ -130,11 +130,11 @@
         }
       }
 
+      calls++;
       if (maxCalls == 0) {
         $.ajax(toSend);
       } else if (maxCalls > 0 && calls < maxCalls) {
         $.ajax(toSend);
-        calls++;
       }
     }
 
@@ -169,17 +169,17 @@
             }
           }
           if (settings.boostPeriod != null) {
-            reset_timer(settings.boostPeriod.call(this, timerInterval));
+            reset_timer(settings.boostPeriod.call(this, settings.minTimeout, timerInterval, calls));
           } else {
-            reset_timer(boostPeriod(timerInterval));
+            reset_timer(boostPeriod(settings.minTimeout, timerInterval, calls));
           }
         } else {
           noChange = 0;
           if (settings.boostWhenNotModified) {
             if (settings.boostPeriod != null) {
-              reset_timer(settings.boostPeriod.call(this, timerInterval));
+              reset_timer(settings.boostPeriod.call(this, settings.minTimeout, timerInterval, calls));
             } else {
-              reset_timer(boostPeriod(timerInterval));
+              reset_timer(boostPeriod(settings.minTimeout, timerInterval, calls));
             }
           } else {
             reset_timer(settings.minTimeout);
