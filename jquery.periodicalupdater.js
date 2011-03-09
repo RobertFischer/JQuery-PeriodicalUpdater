@@ -78,8 +78,8 @@
           timerInterval = settings.maxTimeout;
         }
         after = timerInterval;
-        pu_log('adjusting timer from ' + this.before + ' to '
-            + this.after + '.');
+        pu_log('adjusting timer from ' + this.before + ' to ' + this.after
+            + '.');
         return timerInterval;
       }
     }
@@ -167,8 +167,7 @@
             }
           }
           if (settings.boostPeriod) {
-            reset_timer(settings.boostPeriod.call(this,
-                timerInterval));
+            reset_timer(settings.boostPeriod.call(this, timerInterval));
           } else {
             reset_timer(boostPeriod(timerInterval));
           }
@@ -183,8 +182,7 @@
           // For compatibility with 1.4+ and pre1.4 jQuery only try to
           // parse actual strings, skip when remoteData is already an
           // Object
-          if ((ajaxSettings.dataType === 'json')
-              && (typeof (remoteData) === 'string')) {
+          if ((ajaxSettings.dataType === 'json') && (typeof (remoteData) === 'string')) {
             remoteData = JSON.parse(remoteData);
           }
           if (settings.success) {
