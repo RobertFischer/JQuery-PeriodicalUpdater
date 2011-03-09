@@ -4,9 +4,10 @@
  * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
  *
- * Copyright (c) 2009 by the following: Frank White (http://customcode.info)
- * Robert Fischer (http://smokejumperit.com) 360innovate
- * (http://www.360innovate.co.uk)
+ * Copyright (c) 2009 by the following:
+ *  Frank White (http://customcode.info)
+ *  Robert Fischer (http://smokejumperit.com)
+ *  360innovate (http://www.360innovate.co.uk)
  *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
