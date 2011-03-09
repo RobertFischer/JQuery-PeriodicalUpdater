@@ -1,3 +1,4 @@
+
 /**
  * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
  *
@@ -47,10 +48,20 @@
     var calls = 0;
     var noChange = 0;
     var originalMaxCalls = maxCalls;
+    var remoteData = null;
+    var prevData = null;
 
     if (options) {
       $.extend(settings, options);
     }
+
+    var boostPeriod = function(minTimeout, maxTimeout, timer, calls) {
+      // Default behaviour of boostPeriod is to return the interval * multiplier.
+      if (settings.multiplier >= 1) {
+        pu_log('adjusting timer from ' + timer + ' to ' + timer*settings.multiplier + '.');
+        return timer * settings.multiplier;
+      }
+    };
 
     var reset_timer = function(interval) {
       if (typeof interval !== 'number') {
@@ -67,36 +78,15 @@
       if (timer !== null) {
         clearTimeout(timer);
       }
-      timerInterval = interval;
-      pu_log('resetting timer to ' + timerInterval + '.');
-      timer = setTimeout(getdata, timerInterval);
-    };
 
-    var boostPeriod = function(oldTimerInterval) {
-      if (settings.multiplier >= 1) {
-        before = oldTimerInterval;
-        timerInterval = oldTimerInterval * settings.multiplier;
-
-        if (timerInterval > settings.maxTimeout) {
-          timerInterval = settings.maxTimeout;
-        }
-        after = timerInterval;
-        pu_log('adjusting timer from ' + this.before + ' to ' + this.after + '.');
-        return timerInterval;
+      if (interval > settings.maxTimeout) {
+        interval = settings.maxTimeout;
       }
-    };
 
-    // Construct the settings for $.ajax based on settings
-    var ajaxSettings = jQuery.extend(true, {}, settings);
-    if (settings.type && !ajaxSettings.dataType) {
-      ajaxSettings.dataType = settings.type;
-    }
-    if (settings.sendData) {
-      ajaxSettings.data = settings.sendData;
-    }
-    ajaxSettings.type = settings.method; // 'type' is used internally for
-    // jQuery. Who knew?
-    ajaxSettings.ifModified = true;
+      timerInterval = interval;
+      pu_log('Resetting timer to ' + interval + '.');
+      timer = setTimeout(getdata, interval);
+    };
 
     var handle = {
       restart : function() {
@@ -112,6 +102,18 @@
         return;
       }
     };
+
+    // Construct the settings for $.ajax based on settings
+    var ajaxSettings = jQuery.extend(true, {}, settings);
+    if (settings.type && !ajaxSettings.dataType) {
+      ajaxSettings.dataType = settings.type;
+    }
+    if (settings.sendData) {
+      ajaxSettings.data = settings.sendData;
+    }
+    ajaxSettings.type = settings.method; // 'type' is used internally for
+    // jQuery. Who knew?
+    ajaxSettings.ifModified = true;
 
     // Create the function to get data
     // TODO It'd be nice to do the options.data check once (a la
@@ -132,16 +134,10 @@
       }
 
       calls++;
-      if (maxCalls === 0) {
-        $.ajax(toSend);
-      } else if (maxCalls > 0 && calls < maxCalls) {
-        $.ajax(toSend);
-      }
+      $.ajax(toSend);
     }
 
     // Implement the tricky behind logic
-    var remoteData = null;
-    var prevData = null;
 
     ajaxSettings.success = function(data) {
       pu_log("Successful run! (In 'success')");
@@ -172,17 +168,17 @@
             }
           }
           if (settings.boostPeriod !== null) {
-            reset_timer(settings.boostPeriod.call(this, settings.minTimeout, timerInterval, calls));
+            reset_timer(settings.boostPeriod.call(this, settings.minTimeout, settings.maxTimeout, timerInterval, calls));
           } else {
-            reset_timer(boostPeriod(settings.minTimeout, timerInterval, calls));
+            reset_timer(boostPeriod(settings.minTimeout, settings.maxTimeout, timerInterval, calls));
           }
         } else {
           noChange = 0;
           if (settings.boostWhenNotModified) {
             if (settings.boostPeriod !== null) {
-              reset_timer(settings.boostPeriod.call(this, settings.minTimeout, timerInterval, calls));
+              reset_timer(settings.boostPeriod.call(this, settings.minTimeout, settings.maxTimeout, timerInterval, calls));
             } else {
-              reset_timer(boostPeriod(settings.minTimeout, timerInterval, calls));
+              reset_timer(boostPeriod(settings.minTimeout, settings.maxTimeout, timerInterval, calls));
             }
           } else {
             reset_timer(settings.minTimeout);
