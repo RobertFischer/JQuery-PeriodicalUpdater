@@ -22,6 +22,10 @@
       return Math.abs(Math.cos(Math.PI*n/180));
     };
 
+    doubleit = function(n) {
+      return n*2;
+    }
+
     $.PeriodicalUpdater('source.json', {
       minTimeout : 1000,
       maxTimeout : 10 * 60 * 1000,
