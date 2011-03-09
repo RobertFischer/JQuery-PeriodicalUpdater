@@ -1,4 +1,3 @@
-
 /**
  * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
  *
@@ -9,6 +8,7 @@
  *  Frank White (http://customcode.info)
  *  Robert Fischer (http://smokejumperit.com)
  *  360innovate (http://www.360innovate.co.uk)
+ *  Pol Dell'Aiera ()
  *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
