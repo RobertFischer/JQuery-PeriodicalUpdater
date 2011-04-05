@@ -8,7 +8,7 @@
  *  Frank White (http://customcode.info)
  *  Robert Fischer (http://smokejumperit.com)
  *  360innovate (http://www.360innovate.co.uk)
- *  Pol Dell'Aiera ()
+ *  Pol Dell'Aiera (Drupal Consultant - https://github.com/Polzme)
  *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
@@ -34,10 +34,10 @@
       minTimeout : 1000,
       maxTimeout : 8000,
       multiplier : 2,
-      maxCalls : 0,
+      maxCalls : 10,
       autoStop : 0,
       boostPeriod : null,
-      boostWhenNotModified : true
+      boostWhenNotModified : false
     };
 
     // set some initial values, then begin
@@ -58,20 +58,24 @@
     var boostPeriod = function(minTimeout, maxTimeout, timer, calls) {
       // Default behaviour of boostPeriod is to return the interval * multiplier.
       if (settings.multiplier >= 1) {
-        pu_log('adjusting timer from ' + timer + ' to ' + timer*settings.multiplier + '.');
+        //pu_log('adjusting timer from ' + timer + ' to ' + timer*settings.multiplier + '.');
         return timer * settings.multiplier;
       }
     };
 
     var reset_timer = function(interval) {
       if (typeof interval !== 'number') {
-        pu_log("interval is not a number");
+        //pu_log("interval is not a number");
+        handle.stop();
+        return;
+      }
+      if (interval <= 0) {
+        //pu_log("interval is less or equal to zero");
         handle.stop();
         return;
       }
 
-      if (interval <= 0) {
-        pu_log("interval is less or equal to zero");
+      if ( (calls+1 > settings.maxCalls) && (settings.maxCalls != 0) ) {
         handle.stop();
         return;
       }
@@ -85,20 +89,20 @@
       }
 
       timerInterval = interval;
-      pu_log('Resetting timer to ' + interval + '.');
+      //pu_log('Resetting timer to ' + interval + '.');
       timer = setTimeout(getdata, interval);
     };
 
     var handle = {
       restart : function() {
-        pu_log('handle.restart()');
+        //pu_log('handle.restart()');
         maxCalls = originalMaxCalls;
         calls = 0;
         reset_timer(timerInterval);
         return;
       },
       stop : function() {
-        pu_log('handle.stop()');
+        //pu_log('handle.stop()');
         maxCalls = -1;
         return;
       }
@@ -141,7 +145,7 @@
     // Implement the tricky behind logic
 
     ajaxSettings.success = function(data) {
-      pu_log("Successful run! (In 'success')");
+      //pu_log("Successful run! (In 'success')");
       remoteData = data;
       // timerInterval = settings.minTimeout;
     };
