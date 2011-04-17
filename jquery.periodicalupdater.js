@@ -156,13 +156,13 @@
         return;
       }
       if (success === "success" || success === "notmodified") {
+        var rawData;
         if (ajaxSettings.dataType === 'jsonp') {
             // This requires json2.js if using browser that does not support JSON natively.
-            var rawData = JSON.stringify(remoteData);
+            rawData = JSON.stringify(remoteData);
         } else {
-            var rawData = $.trim(xhr.responseText);
+            rawData = $.trim(xhr.responseText);
         }
-        var rawData = $.trim(xhr.responseText);
         if (rawData === 'STOP_AJAX_CALLS') {
           handle.stop();
           return;
