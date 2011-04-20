@@ -9,6 +9,7 @@ reduces the load on the server naturally.   The first Ajax call happens as a pag
 anywhere onhttps://github.com/Polzme/JQuery-PeriodicalUpdater/blob/master/README.md the page.
 
 Usage:
+
     $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
         data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
