@@ -9,7 +9,7 @@ reduces the load on the server naturally.   The first Ajax call happens as a pag
 anywhere on the page.
 
 Usage:
-    $.PeriodicalUpdater('/path/to/service', {
+ $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
         data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
         minTimeout: 1000,       // starting value for the timeout in milliseconds
@@ -20,7 +20,7 @@ Usage:
         autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
     }, function(remoteData, success, xhr, handle) {
         // Process the new data (only called when there was a change)
-    });
+ });
 
 The "data" value can be one of three things:
 
