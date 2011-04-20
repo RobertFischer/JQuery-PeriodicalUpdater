@@ -6,10 +6,10 @@ decay as long as the same response keeps coming back from the server (either in
 the form of repeated data or in the form of a 304 Not Modified status), which
 reduces the load on the server naturally.   The first Ajax call happens as a page
 'onReady' handler (ie: the `jQuery(function)` call), so it is safe to put the PeriodicalUpdater call
-anywhere on the page.
+anywhere onhttps://github.com/Polzme/JQuery-PeriodicalUpdater/blob/master/README.md the page.
 
 Usage:
- $.PeriodicalUpdater('/path/to/service', {
+    $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
         data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
         minTimeout: 1000,       // starting value for the timeout in milliseconds
@@ -20,7 +20,7 @@ Usage:
         autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
     }, function(remoteData, success, xhr, handle) {
         // Process the new data (only called when there was a change)
- });
+    });
 
 The "data" value can be one of three things:
 
