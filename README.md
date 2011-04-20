@@ -8,7 +8,7 @@ reduces the load on the server naturally.   The first Ajax call happens as a pag
 'onReady' handler (ie: the `jQuery(function)` call), so it is safe to put the PeriodicalUpdater call
 anywhere onhttps://github.com/Polzme/JQuery-PeriodicalUpdater/blob/master/README.md the page.
 
-Usage:
+Usage
 
     $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
@@ -33,6 +33,7 @@ The "data" value can be one of three things:
 You can also change the period between each AJAX call by overriding the boosPeriod function.
 
 Usage:
+
     $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
         data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
