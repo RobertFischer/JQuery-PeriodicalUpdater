@@ -154,6 +154,7 @@
               if(callback) callback(remoteData, success, xhr, handle);
             }
           }
+          if(settings.complete) { settings.complete(xhr, success); }
           remoteData = null;
         }
 
