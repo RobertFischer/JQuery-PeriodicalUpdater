@@ -116,7 +116,7 @@
         var prevData    = null;
 
         ajaxSettings.success = function(data) {
-          pu_log("Successful run! (In 'success')");
+          //pu_log("Successful run! (In 'success')");
           remoteData      = data;
           // timerInterval   = settings.minTimeout;
         };
