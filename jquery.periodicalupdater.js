@@ -1,6 +1,6 @@
 /**
  * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
- *
+ * 
  * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
  * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
  *
@@ -50,7 +50,7 @@
             clearTimeout(timer);
           }
           timerInterval = interval;
-          pu_log('resetting timer to '+ timerInterval +'.');
+          //pu_log('resetting timer to '+ timerInterval +'.');
           timer = setTimeout(getdata, timerInterval);
         }
 
