@@ -9,6 +9,7 @@ reduces the load on the server naturally.   The first Ajax call happens as a pag
 anywhere on the page.
 
 Usage:
+
     $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
         data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
@@ -17,7 +18,8 @@ Usage:
         multiplier: 2,          // the amount to expand the timeout by if the response hasn't changed (up to maxTimeout)
         type: 'text',           // response type - text, xml, json, etc.  See $.ajax config options
         maxCalls: 0,            // maximum number of calls. 0 = no limit.
-        autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
+        autoStop: 0,            // automatically stop requests after this many returns of the same data. 0 = disabled.
+        verbose: 0              // Sets the console logging verbosity: 0=none, 1=some, 2=all 
     }, function(remoteData, success, xhr, handle) {
         // Process the new data (only called when there was a change)
     });

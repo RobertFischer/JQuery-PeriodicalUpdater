@@ -16,11 +16,6 @@
  */
 
 (function($) {
-    var pu_log = function(msg) {
-      try {
-        console.log(msg);
-      } catch(err) {}
-    }
 
     // Now back to our regularly scheduled work
     $.PeriodicalUpdater = function(url, options, callback, autoStopCallback){
@@ -33,7 +28,8 @@
           maxTimeout: 8000, // maximum length of time between requests
           multiplier: 2,    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
           maxCalls: 0,      // maximum number of calls. 0 = no limit.
-          autoStop: 0       // automatically stop requests after this many returns of the same data. 0 = disabled
+          autoStop: 0,       // automatically stop requests after this many returns of the same data. 0 = disabled
+          verbose: 0
         }, options);
 
         // set some initial values, then begin
@@ -44,13 +40,22 @@
         var calls         = 0;
         var noChange      = 0;
         var originalMaxCalls = maxCalls;
+        
+        var pu_log = function(msg, verbosity) {
+          try {
+              if (settings.verbose && settings.verbose >= verbosity) {
+                console.log(msg);
+            }
+          } catch(err) {}
+        }
+
 
         var reset_timer = function(interval) {
           if (timer != null) {
             clearTimeout(timer);
           }
           timerInterval = interval;
-          pu_log('resetting timer to '+ timerInterval +'.');
+          pu_log('resetting timer to '+ timerInterval +'.', 1);
           timer = setTimeout(getdata, timerInterval);
         }
 
@@ -64,7 +69,7 @@
               timerInterval = settings.maxTimeout;
             }
             after = timerInterval;
-            pu_log('adjusting timer from '+ before +' to '+ after +'.');
+            pu_log('adjusting timer from '+ before +' to '+ after +'.',1);
             reset_timer(timerInterval);
           }
         };
@@ -116,13 +121,13 @@
         var prevData    = null;
 
         ajaxSettings.success = function(data) {
-          pu_log("Successful run! (In 'success')");
+          pu_log("Successful run! (In 'success')", 1);
           remoteData      = data;
           // timerInterval   = settings.minTimeout;
         };
 
         ajaxSettings.complete = function(xhr, success) {
-          //pu_log("Status of call: " + success + " (In 'complete')");
+          pu_log("Status of call: " + success + " (In 'complete')", 2);
           if(maxCalls == -1) return;
           if(success == "success" || success == "notmodified") {
             var rawData = $.trim(xhr.responseText);
@@ -159,7 +164,7 @@
 
 
         ajaxSettings.error = function (xhr, textStatus) {
-          //pu_log("Error message: " + textStatus + " (In 'error')");
+          pu_log("Error message: " + textStatus + " (In 'error')", 2);
           if(textStatus != "notmodified") {
             prevData = null;
             reset_timer(settings.minTimeout);
