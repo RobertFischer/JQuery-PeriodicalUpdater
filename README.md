@@ -8,7 +8,9 @@ reduces the load on the server naturally.   The first Ajax call happens as a pag
 'onReady' handler (ie: the `jQuery(function)` call), so it is safe to put the PeriodicalUpdater call
 anywhere on the page.
 
-Usage:
+### Usage:
+
+```javascript
     $.PeriodicalUpdater('/path/to/service', {
         method: 'get',          // method; get or post
         data: '',               // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
@@ -21,7 +23,7 @@ Usage:
     }, function(remoteData, success, xhr, handle) {
         // Process the new data (only called when there was a change)
     });
-
+```
 The "data" value can be one of three things:
 
 * A scalar, in which case it will be used constantly.
