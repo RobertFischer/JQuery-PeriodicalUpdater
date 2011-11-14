@@ -34,7 +34,7 @@
             multiplier: 2,    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
             maxCalls: 0,      // maximum number of calls. 0 = no limit.
             autoStop: 0,      // automatically stop requests after this many returns of the same data. 0 = disabled
-            runatonce: false, // runs once at creation
+            runatonce: false // runs once at creation
         }, options);
 
         // set some initial values, then begin
