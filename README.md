@@ -24,12 +24,13 @@ anywhere on the page.
         // Process the new data (only called when there was a change)
     });
 ```
+
 The "data" value can be one of three things:
 
 * A scalar, in which case it will be used constantly.
 * A JSON map/object, in which case it will be turned into key/value pairs by jQuery
 * An anonymous function, in which case it will be executed before each AJAX call.  See 
-[jQuery.ajax](http://api.jquery.com/jQuery.ajax/) for more information.
+  [jQuery.ajax](http://api.jquery.com/jQuery.ajax/) for more information.
 
 Any of the other standard $.ajax configuration options can be passed to the setting map.  
 The only exception is the flag that treats modifications as errors. That’s always
