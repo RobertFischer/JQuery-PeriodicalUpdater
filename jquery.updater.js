@@ -15,7 +15,7 @@
 
 (function($) {
     $.Updater = function(url, options, callback){
- 
+
         var settings = jQuery.extend(true, {
             url: url, // URL of ajax request
             method: 'get', // method; get or post
@@ -23,7 +23,7 @@
             type: 'json', // response type - text, xml, json etc
             interval: '3000'
         }, options);
-        
+
         var timerInterval = settings.interval;
 
         // Construct the settings for $.ajax based on settings
@@ -32,7 +32,7 @@
         ajaxSettings.dataType = settings.type;
         ajaxSettings.type = settings.method; // 'type' is used internally for jQuery. Who knew?
 
-        ajaxSettings.success = function(data) {         
+        ajaxSettings.success = function(data) {
             PeriodicalTimer = setTimeout(getdata, timerInterval);
             if(callback) {
                 callback(data);
@@ -40,7 +40,7 @@
         };
         // Make the first call
         $(function() { getdata(); });
- 
+
         function getdata() { $.ajax(ajaxSettings); }
     };
 })(jQuery);
