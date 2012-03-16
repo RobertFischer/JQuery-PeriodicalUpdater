@@ -6,7 +6,7 @@ decay as long as the same response keeps coming back from the server (either in
 the form of repeated data or in the form of a 304 Not Modified status), which
 reduces the load on the server naturally.   The first Ajax call happens as a page
 'onReady' handler (ie: the `jQuery(function)` call), so it is safe to put the PeriodicalUpdater call
-anywhere onhttps://github.com/Polzme/JQuery-PeriodicalUpdater/blob/master/README.md the page.
+anywhere on the page.
 
 Usage
 
