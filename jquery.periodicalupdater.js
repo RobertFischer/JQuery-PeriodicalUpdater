@@ -1,40 +1,35 @@
 /**
-* PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
-*
-* http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
-* http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
-*
-* Copyright (c) 2009 by the following:
-*  Frank White (http://customcode.info)
-*  Robert Fischer (http://smokejumperit.com)
-*  360innovate (http://www.360innovate.co.uk)
-*
-* Dual licensed under the MIT and GPL licenses:
-* http://www.opensource.org/licenses/mit-license.php
-* http://www.gnu.org/licenses/gpl.html
-*
-*/
+ * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
+ *
+ * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
+ * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
+ *
+ * Copyright (c) 2009-2012 by the following:
+ *  Frank White (http://customcode.info)
+ *  Robert Fischer (http://smokejumperit.com)
+ *  360innovate (http://www.360innovate.co.uk)
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ */
 
-(function ($) {
-    var pu_log = function (msg) {
-        try {
-            console.log(msg);
-        } catch (err) { }
-    }
+(function($) {
 
     // Now back to our regularly scheduled work
-    $.PeriodicalUpdater = function (url, options, callback, autoStopCallback) {
-        var settings = jQuery.extend(true, {
-            url: url,         // URL of ajax request
-            cache: false,     // By default, don't allow caching
-            method: 'GET',    // method; get or post
-            data: '',         // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
-            minTimeout: 1000, // starting value for the timeout in milliseconds
-            maxTimeout: 8000, // maximum length of time between requests
-            multiplier: 2,    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
-            maxCalls: 0,      // maximum number of calls. 0 = no limit.
-            autoStop: 0,      // automatically stop requests after this many returns of the same data. 0 = disabled
-            runatonce: false // runs once at creation
+    $.PeriodicalUpdater = function(url, options, callback, autoStopCallback){
+      var settings = jQuery.extend(true, {
+          url: url,         // URL of ajax request
+          cache: false,     // By default, don't allow caching
+          method: 'GET',    // method; get or post
+          data: '',         // array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+          minTimeout: 1000, // starting value for the timeout in milliseconds
+          maxTimeout: 8000, // maximum length of time between requests
+          multiplier: 2,    // if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
+          maxCalls: 0,      // maximum number of calls. 0 = no limit.
+          autoStop: 0,       // automatically stop requests after this many returns of the same data. 0 = disabled
+          verbose: 0
         }, options);
 
         // set some initial values, then begin
@@ -45,14 +40,22 @@
         var calls = 0;
         var noChange = 0;
         var originalMaxCalls = maxCalls;
-
-        var reset_timer = function (interval) {
-            if (timer != null) {
-                clearTimeout(timer);
+        
+        var pu_log = function(msg, verbosity) {
+          try {
+              if (settings.verbose && settings.verbose >= verbosity) {
+                console.log(msg);
             }
-            timerInterval = interval;
-            pu_log('resetting timer to ' + timerInterval + '.');
-            timer = setTimeout(getdata, timerInterval);
+          } catch(err) {}
+        }
+
+        var reset_timer = function(interval) {
+          if (timer != null) {
+            clearTimeout(timer);
+          }
+          timerInterval = interval;
+          pu_log('resetting timer to '+ timerInterval +'.', 1);
+          timer = setTimeout(getdata, timerInterval);
         }
 
         // Function to boost the timer 
@@ -68,6 +71,10 @@
                 pu_log('adjusting timer from ' + before + ' to ' + after + '.');
                 reset_timer(timerInterval);
             }
+            after = timerInterval;
+            pu_log('adjusting timer from '+ before +' to '+ after +'.',1);
+            reset_timer(timerInterval);
+          }
         };
 
         // Construct the settings for $.ajax based on settings
@@ -160,12 +167,12 @@
 
 
         ajaxSettings.error = function (xhr, textStatus) {
-            //pu_log("Error message: " + textStatus + " (In 'error')");
-            if (textStatus != "notmodified") {
-                prevData = null;
-                reset_timer(settings.minTimeout);
-            }
-            if (settings.error) { settings.error(xhr, textStatus); }
+          pu_log("Error message: " + textStatus + " (In 'error')", 2);
+          if(textStatus != "notmodified") {
+            prevData = null;
+            reset_timer(settings.minTimeout);
+          }
+          if(settings.error) { settings.error(xhr, textStatus); }
         };
 
         // Make the first call
