@@ -1,21 +1,26 @@
 /**
- * PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
- *
- * http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
- * http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
- *
- * Copyright (c) 2009-2012 by the following:
- *  Frank White (http://customcode.info)
- *  Robert Fischer (http://smokejumperit.com)
- *  360innovate (http://www.360innovate.co.uk)
- *
- * Dual licensed under the MIT and GPL licenses:
- * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
- *
- */
+* PeriodicalUpdater - jQuery plugin for timed, decaying ajax calls
+*
+* http://www.360innovate.co.uk/blog/2009/03/periodicalupdater-for-jquery/
+* http://enfranchisedmind.com/blog/posts/jquery-periodicalupdater-ajax-polling/
+*
+* Copyright (c) 2009-2012 by the following:
+*  Frank White (http://customcode.info)
+*  Robert Fischer (http://smokejumperit.com)
+*  360innovate (http://www.360innovate.co.uk)
+*
+* Dual licensed under the MIT and GPL licenses:
+* http://www.opensource.org/licenses/mit-license.php
+* http://www.gnu.org/licenses/gpl.html
+*
+*/
 
-(function($) {
+(function ($) {
+    var pu_log = function (msg) {
+        try {
+            console.log(msg);
+        } catch (err) { }
+    };
 
     // Now back to our regularly scheduled work
     $.PeriodicalUpdater = function(url, options, callback, autoStopCallback){
@@ -40,25 +45,17 @@
         var calls = 0;
         var noChange = 0;
         var originalMaxCalls = maxCalls;
-        
-        var pu_log = function(msg, verbosity) {
-          try {
-              if (settings.verbose && settings.verbose >= verbosity) {
-                console.log(msg);
+
+        var reset_timer = function (interval) {
+            if (timer !== null) {
+                clearTimeout(timer);
             }
-          } catch(err) {}
-        }
+            timerInterval = interval;
+            // pu_log('resetting timer to ' + timerInterval + '.');
+            timer = setTimeout(getdata, timerInterval);
+        };
 
-        var reset_timer = function(interval) {
-          if (timer != null) {
-            clearTimeout(timer);
-          }
-          timerInterval = interval;
-          pu_log('resetting timer to '+ timerInterval +'.', 1);
-          timer = setTimeout(getdata, timerInterval);
-        }
-
-        // Function to boost the timer 
+        // Function to boost the timer
         var boostPeriod = function () {
             if (settings.multiplier >= 1) {
                 before = timerInterval;
@@ -68,7 +65,7 @@
                     timerInterval = settings.maxTimeout;
                 }
                 after = timerInterval;
-                pu_log('adjusting timer from ' + before + ' to ' + after + '.');
+                // pu_log('adjusting timer from ' + before + ' to ' + after + '.');
                 reset_timer(timerInterval);
             }
             after = timerInterval;
@@ -79,8 +76,8 @@
 
         // Construct the settings for $.ajax based on settings
         var ajaxSettings = jQuery.extend(true, {}, settings);
-        if (settings.type && !ajaxSettings.dataType) ajaxSettings.dataType = settings.type;
-        if (settings.sendData) ajaxSettings.data = settings.sendData;
+        if (settings.type && !ajaxSettings.dataType) { ajaxSettings.dataType = settings.type; }
+        if (settings.sendData) { ajaxSettings.data = settings.sendData; }
         ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
         ajaxSettings.ifModified = true;
 
@@ -111,7 +108,7 @@
                 }
             }
 
-            if (maxCalls == 0) {
+            if (maxCalls === 0) {
                 $.ajax(toSend);
             } else if (maxCalls > 0 && calls < maxCalls) {
                 $.ajax(toSend);
@@ -124,14 +121,14 @@
         var prevData = null;
 
         ajaxSettings.success = function (data) {
-            pu_log("Successful run! (In 'success')");
+            // pu_log("Successful run! (In 'success')");
             remoteData = data;
             // timerInterval   = settings.minTimeout;
         };
 
         ajaxSettings.complete = function (xhr, success) {
-            //pu_log("Status of call: " + success + " (In 'complete')");
-            if (maxCalls == -1) return;
+            // pu_log("Status of call: " + success + " (In 'complete')");
+            if (maxCalls === -1) { return; }
             if (success == "success" || success == "notmodified") {
                 var rawData = $.trim(xhr.responseText);
                 if (rawData == 'STOP_AJAX_CALLS') {
@@ -143,7 +140,7 @@
                         noChange++;
                         if (noChange == autoStop) {
                             handle.stop();
-                            if (autoStopCallback) autoStopCallback(noChange);
+                            if (autoStopCallback) { autoStopCallback(noChange); }
                             return;
                         }
                     }
@@ -152,19 +149,19 @@
                     noChange = 0;
                     reset_timer(settings.minTimeout);
                     prevData = rawData;
-                    if (remoteData == null) remoteData = rawData;
+                    if (remoteData === null) { remoteData = rawData; }
                     // jQuery 1.4+ $.ajax() automatically converts "data" into a JS Object for "type:json" requests now
                     // For compatibility with 1.4+ and pre1.4 jQuery only try to parse actual strings, skip when remoteData is already an Object
                     if ((ajaxSettings.dataType === 'json') && (typeof (remoteData) === 'string') && (success == "success")) {
                         remoteData = JSON.parse(remoteData);
                     }
                     if (settings.success) { settings.success(remoteData, success, xhr, handle); }
-                    if (callback) callback(remoteData, success, xhr, handle);
+                    if (callback) { callback(remoteData, success, xhr, handle); }
                 }
             }
+            if (settings.complete) { settings.complete(xhr, success); }
             remoteData = null;
-        }
-
+        };
 
         ajaxSettings.error = function (xhr, textStatus) {
           pu_log("Error message: " + textStatus + " (In 'error')", 2);
@@ -177,12 +174,11 @@
 
         // Make the first call
         $(function () {
-        
-        if (settings.runatonce) {
-            getdata();
-        } else {
-            reset_timer(timerInterval); 
-        }
+            if (settings.runatonce) {
+                getdata();
+            } else {
+                reset_timer(timerInterval);
+            }
         });
 
         return handle;
