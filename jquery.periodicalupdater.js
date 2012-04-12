@@ -82,10 +82,11 @@
         ajaxSettings.ifModified = true;
 
         var handle = {
-            restart: function () {
+            restart: function (newInterval) {
                 maxCalls = originalMaxCalls;
                 calls = 0;
-                reset_timer(timerInterval);
+                noChange = 0;
+                reset_timer(newInterval || timerInterval);
                 return;
             },
             stop: function () {
