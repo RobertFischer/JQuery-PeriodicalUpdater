@@ -57,22 +57,21 @@
 
         // Function to boost the timer
         var boostPeriod = function () {
-            if (settings.multiplier >= 1) {
-                before = timerInterval;
-                timerInterval = timerInterval * settings.multiplier;
+					if (settings.multiplier >= 1) {
+							before = timerInterval;
+							timerInterval = timerInterval * settings.multiplier;
 
-                if (timerInterval > settings.maxTimeout) {
-                    timerInterval = settings.maxTimeout;
-                }
-                after = timerInterval;
-                // pu_log('adjusting timer from ' + before + ' to ' + after + '.');
-                reset_timer(timerInterval);
-            }
-            after = timerInterval;
-            pu_log('adjusting timer from '+ before +' to '+ after +'.',1);
-            reset_timer(timerInterval);
-          }
-        };
+							if (timerInterval > settings.maxTimeout) {
+									timerInterval = settings.maxTimeout;
+							}
+							after = timerInterval;
+							// pu_log('adjusting timer from ' + before + ' to ' + after + '.');
+							reset_timer(timerInterval);
+					}
+					after = timerInterval;
+					pu_log('adjusting timer from '+ before +' to '+ after +'.',1);
+					reset_timer(timerInterval);
+				};
 
         // Construct the settings for $.ajax based on settings
         var ajaxSettings = jQuery.extend(true, {}, settings);
