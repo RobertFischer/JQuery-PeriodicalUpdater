@@ -57,19 +57,16 @@
 
         // Function to boost the timer
         var boostPeriod = function () {
-					if (settings.multiplier >= 1) {
-							before = timerInterval;
-							timerInterval = timerInterval * settings.multiplier;
+					if (settings.multiplier > 1) {
+						var before = timerInterval;
+						timerInterval = timerInterval * settings.multiplier;
 
-							if (timerInterval > settings.maxTimeout) {
-									timerInterval = settings.maxTimeout;
-							}
-							after = timerInterval;
-							// pu_log('adjusting timer from ' + before + ' to ' + after + '.');
-							reset_timer(timerInterval);
+						if (timerInterval > settings.maxTimeout) {
+								timerInterval = settings.maxTimeout;
+						}
+						pu_log('adjusting timer from ' + before + ' to ' + timerInterval + '.');
 					}
-					after = timerInterval;
-					pu_log('adjusting timer from '+ before +' to '+ after +'.',1);
+
 					reset_timer(timerInterval);
 				};
 
@@ -80,33 +77,19 @@
         ajaxSettings.type = settings.method; // 'type' is used internally for jQuery.  Who knew?
         ajaxSettings.ifModified = true;
 
-        var handle = {
-            restart: function (newInterval) {
-                maxCalls = originalMaxCalls;
-                calls = 0;
-                noChange = 0;
-                reset_timer(newInterval || timerInterval);
-                return;
-            },
-            stop: function () {
-                maxCalls = -1;
-                return;
-            }
-        };
 
         // Create the function to get data
-        // TODO It'd be nice to do the options.data check once (a la boostPeriod)
         function getdata() {
             var toSend = jQuery.extend(true, {}, ajaxSettings); // jQuery screws with what you pass in
             if (typeof (options.data) == 'function') {
-                toSend.data = options.data();
-                if (toSend.data) {
-                    // Handle transformations (only strings and objects are understood)
-                    if (typeof (toSend.data) == "number") {
-                        toSend.data = toSend.data.toString();
-                    }
-                }
-            }
+							toSend.data = options.data();
+						}
+						if (toSend.data) {
+							// Handle transformations (only strings and objects are understood)
+							if (typeof (toSend.data) == "number") {
+									toSend.data = toSend.data.toString();
+							}
+						}
 
             if (maxCalls === 0) {
                 $.ajax(toSend);
@@ -115,6 +98,24 @@
                 calls++;
             }
         }
+
+        var handle = {
+            restart: function (newInterval) {
+                maxCalls = originalMaxCalls;
+                calls = 0;
+                noChange = 0;
+                reset_timer(newInterval || timerInterval);
+                return;
+            },
+						send: function() {
+							getdata();
+							return;
+						},
+            stop: function () {
+                maxCalls = -1;
+                return;
+            }
+        };
 
         // Implement the tricky behind logic
         var remoteData = null;
@@ -131,10 +132,6 @@
             if (maxCalls === -1) { return; }
             if (success == "success" || success == "notmodified") {
                 var rawData = $.trim(xhr.responseText);
-                if (rawData == 'STOP_AJAX_CALLS') {
-                    handle.stop();
-                    return;
-                }
                 if (prevData == rawData) {
                     if (autoStop > 0) {
                         noChange++;
