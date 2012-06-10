@@ -26,12 +26,12 @@
 					maxTimeout: 8000, // maximum length of time between requests
 					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
 					maxCalls: 0,			// maximum number of calls. 0 = no limit.
-					autoStop: 0,			 // automatically stop requests after this many returns of the same data. 0 = disabled
-					verbose: 0
+					autoStop: 0,			// automatically stop requests after this many returns of the same data. 0 = disabled
+					verbose: 0				// The level to be logging at: 0 = none; 1 = some; 2 = all
 				}, options);
 		
 			var pu_log = function (msg, lvl) {
-				lvl = lvl || 0;
+				lvl = lvl || 1;
 				if(settings.verbose >= lvl) {
 					try {
 							console.log(msg);
