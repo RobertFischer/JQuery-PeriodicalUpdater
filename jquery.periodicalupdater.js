@@ -201,7 +201,7 @@
 										noChange = 0;
 										reset_timer(settings.minTimeout);
 										prevData = rawData;
-										if(settings.cookie) $.cookie(setings.cookie.name, prevData, settings.cookie);
+										if (settings.cookie) $.cookie(settings.cookie.name, prevData, settings.cookie);
 										if (remoteData === null) { remoteData = rawData; }
 										// jQuery 1.4+ $.ajax() automatically converts "data" into a JS Object for "type:json" requests now
 										// For compatibility with 1.4+ and pre1.4 jQuery only try to parse actual strings, skip when remoteData is already an Object
