@@ -52,7 +52,7 @@ Any of the other standard [$.ajax configuration options](http://api.jquery.com/j
 can be passed to the setting map. The only exception is the flag that treats modifications as errors. That is always
 going to be `true`.
 
-### Return Value:
+### Function Return Value:
 
 The function call returns a handle.  You can call `.stop()` on this handle in order to stop
 the updating and ignore any subsequent responses.  If the maximum number of calls, `.stop()`, or 
