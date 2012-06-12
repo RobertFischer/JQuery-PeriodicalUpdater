@@ -56,6 +56,7 @@
 
 				// Function to reset the timer to a given time
 				var reset_timer = function (interval) {
+					$(function() { // Ensure we're live
 						if (timer !== null) {
 								clearTimeout(timer);
 						}
@@ -65,6 +66,7 @@
 							$.cookie(settings.cookie.name, timerInterval, settings.cookie);
 						}
 						timer = setTimeout(getdata, timerInterval);
+					});
 				};
 
 				// Function to boost the timer
@@ -130,16 +132,16 @@
 						if (toSend.data) {
 							// Handle transformations (only strings and objects are understood)
 							if (typeof (toSend.data) == "number") {
-									toSend.data = toSend.data.toString();
+								toSend.data = toSend.data.toString();
 							}
 						}
 
 						if (maxCalls === 0) {
 								pu_log("Sending data");
-								$.ajax(toSend);
+								$(function() { $.ajax(toSend); });
 						} else if (maxCalls > 0 && calls < maxCalls) {
 								pu_log("Sending data because we are at " + calls	+ " of " + maxCalls + " calls");
-								$.ajax(toSend);
+								$(function() { $.ajax(toSend); });
 								calls++;
 						} else if(maxCalls == -1) {
 							pu_log("NOT sending data: stop has been called", 1);
@@ -227,15 +229,15 @@
 				};
 
 				// Make the first call
-				$(function () {
-						if (settings.runatonce) {
-							pu_log("Executing a call immediately", 1);
-							getdata();
-						} else {
-							pu_log("Enqueing a the call for after " + timerInterval, 1);
-							reset_timer(timerInterval);
-						}
-				});
+				if (settings.runatonce) {
+					pu_log("Executing a call immediately", 1);
+					getdata();
+				} else if(included_cookies && settings.cookie) {
+					// Do nothing (already handled above)
+				} else {
+					pu_log("Enqueing a the call for after " + timerInterval, 1);
+					reset_timer(timerInterval);
+				}
 
 				return handle;
 		};
