@@ -107,6 +107,7 @@
 							}
 						}).fail(function() {
 							pu_log("Could not load the cookies handler script", 1);
+							reset_timer(timerInterval);
 						});
 					} else {
 						if($.cookie(settings.cookie.name)) {
