@@ -16,6 +16,8 @@
 */
 
 (function ($) {
+		var included_cookies = false; // Has the cookies script loaded? (i.e. it's safe to call $.cookie)
+
 		$.PeriodicalUpdater = function(url, options, callback, autoStopCallback){
 			var settings = jQuery.extend(true, {
 					url: url,					// URL of ajax request
@@ -27,6 +29,7 @@
 					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
 					maxCalls: 0,			// maximum number of calls. 0 = no limit.
 					autoStop: 0,			// automatically stop requests after this many returns of the same data. 0 = disabled
+					cookie: false,		// whether (and how) to store a cookie
 					verbose: 0				// The level to be logging at: 0 = none; 1 = some; 2 = all
 				}, options);
 		
@@ -39,8 +42,11 @@
 				}
 			};
 
+
 				// set some initial values, then begin
 				var timer = null;
+				var remoteData = null;
+				var prevData = null;
 				var timerInterval = settings.minTimeout;
 				var maxCalls = settings.maxCalls;
 				var autoStop = settings.autoStop;
@@ -48,12 +54,16 @@
 				var noChange = 0;
 				var originalMaxCalls = maxCalls;
 
+				// Function to reset the timer to a given time
 				var reset_timer = function (interval) {
 						if (timer !== null) {
 								clearTimeout(timer);
 						}
 						timerInterval = interval;
 						pu_log('resetting timer to ' + timerInterval + '.', 2);
+						if(settings.cookie && included_cookies) {
+							$.cookie(settings.cookie.name, timerInterval, settings.cookie);
+						}
 						timer = setTimeout(getdata, timerInterval);
 				};
 
@@ -71,6 +81,37 @@
 
 					reset_timer(timerInterval);
 				};
+
+				// Handle the cookie config
+				if(settings.cookie) {
+					if(typeof(settings.cookie) == 'boolean') {
+						settings.cookie = {
+							name: url
+						};
+					} else if(typeof(settings.cookie) != 'object') {
+						settings.cookie = {
+							name: settings.cookie.toString()
+						};
+					} else if(!settings.cookie.name) {
+						settings.cookie.name = url;
+					}
+
+					if(!included_cookies) {
+						$.getScript("https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js", function() {
+							included_cookies = true;
+							pu_log("Loaded the cookies handler script", 2);
+							if($.cookie(settings.cookie.name)) {
+								reset_timer($.cookie(settings.cookie.name));
+							}
+						}).fail(function() {
+							pu_log("Could not load the cookies handler script", 1);
+						});
+					} else {
+						if($.cookie(settings.cookie.name)) {
+							reset_timer($.cookie(settings.cookie.name));
+						}
+					}
+				}
 
 				// Construct the settings for $.ajax based on settings
 				var ajaxSettings = jQuery.extend(true, {}, settings);
@@ -128,14 +169,14 @@
 						stop: function () {
 							pu_log("Calling stop");
 							maxCalls = -1;
+							if(settings.cookie && included_cookies) {
+								$.cookie(settings.cookie.name, null, settings.cookie);
+							}
 							return;
 						}
 				};
 
-				// Implement the tricky behind logic
-				var remoteData = null;
-				var prevData = null;
-
+				// Implement the tricky comparison logic
 				ajaxSettings.success = function (data) {
 						pu_log("Successful run! (In 'success')", 2);
 						remoteData = data;
@@ -160,6 +201,7 @@
 										noChange = 0;
 										reset_timer(settings.minTimeout);
 										prevData = rawData;
+										if(settings.cookie) $.cookie(setings.cookie.name, prevData, settings.cookie);
 										if (remoteData === null) { remoteData = rawData; }
 										// jQuery 1.4+ $.ajax() automatically converts "data" into a JS Object for "type:json" requests now
 										// For compatibility with 1.4+ and pre1.4 jQuery only try to parse actual strings, skip when remoteData is already an Object
@@ -178,6 +220,7 @@
 					pu_log("Error message: " + textStatus + " (In 'error')", 2);
 					if(textStatus != "notmodified") {
 						prevData = null;
+						if(settings.cookie) $.cookie(settings.cookie.name, null, settings.cookie);
 						reset_timer(settings.minTimeout);
 					}
 					if(settings.error) { settings.error(xhr, textStatus); }
@@ -189,7 +232,7 @@
 							pu_log("Executing a call immediately", 1);
 							getdata();
 						} else {
-							pu_log("Enqueing a the call for after " + timeInterval, 1);
+							pu_log("Enqueing a the call for after " + timerInterval, 1);
 							reset_timer(timerInterval);
 						}
 				});
