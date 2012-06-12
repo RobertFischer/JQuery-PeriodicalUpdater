@@ -33,7 +33,8 @@ The "data" value can be one of three things:
 * An anonymous function, in which case it will be executed before each AJAX call.  See 
   [jQuery.ajax](http://api.jquery.com/jQuery.ajax/) for more information.
 
-Any of the other standard $.ajax configuration options can be passed to the setting map.  
+Any of the other standard [$.ajax configuration options](http://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings) 
+can be passed to the setting map.
 The only exception is the flag that treats modifications as errors. That is always
 going to be 'true'.
 
