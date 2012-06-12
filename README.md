@@ -34,8 +34,7 @@ The "data" value can be one of three things:
   [jQuery.ajax](http://api.jquery.com/jQuery.ajax/) for more information.
 
 Any of the other standard [$.ajax configuration options](http://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings) 
-can be passed to the setting map.
-The only exception is the flag that treats modifications as errors. That is always
+can be passed to the setting map.  The only exception is the flag that treats modifications as errors. That is always
 going to be 'true'.
 
 The function call returns a handle.  You can call `.stop()` on this handle in order to stop
@@ -44,7 +43,7 @@ the autoStop has been triggered, you can restart the updater using `.restart()` 
 You can also call `.send()` on the handle to force a send of the AJAX request.
 This handle is also passed into the callback functions as the fourth argument.
 
-More info, including advantages over 360innovate version, see 
+For more info about the motivation for this plugin, including its advantages over the deprecated 360innovate version, see 
 [the blog post on EnfranchisedMind](http://blog.enfranchisedmind.com/posts/jquery-periodicalupdater/).
 
 See the source file for license terms.
