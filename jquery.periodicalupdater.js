@@ -136,7 +136,7 @@
 
 
 				// Create the function to get data
-				function getdata() {
+				function getdata(force) {
 						var toSend = jQuery.extend(true, {}, ajaxSettings); // jQuery screws with what you pass in
 						if (typeof (options.data) == 'function') {
 							toSend.data = options.data();
@@ -148,7 +148,7 @@
 							}
 						}
 
-						if (maxCalls === 0) {
+						if (force || maxCalls === 0) {
 								pu_log("Sending data");
 								$(function() { $.ajax(toSend); });
 						} else if (maxCalls > 0 && calls < maxCalls) {
@@ -173,11 +173,7 @@
 						},
 						send: function() {
 							pu_log("Explicit call to send");
-							if(maxCalls > 0 && calls >= maxCalls) {
-								calls = maxCalls - 1;
-								pu_log("Reduced call count to " + calls, 1);
-							}
-							getdata();
+							getdata(true);
 							return;
 						},
 						stop: function () {
@@ -198,7 +194,6 @@
 
 				ajaxSettings.complete = function (xhr, success) {
 						 pu_log("Status of call: " + success + " (In 'complete')", 2);
-						if (maxCalls === -1) { return; }
 						if (success == "success" || success == "notmodified") {
 								var rawData = $.trim(xhr.responseText);
 								if (prevData == rawData) {
