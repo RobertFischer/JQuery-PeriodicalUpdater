@@ -98,7 +98,8 @@
 						settings.cookie = {
 							name: settings.cookie.toString()
 						};
-					} else if(!settings.cookie.name) {
+					} 
+					if(!settings.cookie.name) {
 						settings.cookie.name = url;
 					}
 
@@ -106,8 +107,14 @@
 						$.getScript("https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js", function() {
 							included_cookies = true;
 							pu_log("Loaded the cookies handler script", 2);
-							if($.cookie(settings.cookie.name)) {
-								reset_timer($.cookie(settings.cookie.name));
+							if(!settings.runatonce) {
+								if($.cookie(settings.cookie.name)) {
+									pu_log("Not runatonce and have cookie value", 2);
+									reset_timer($.cookie(settings.cookie.name));
+								} else {
+									pu_log("Not runatonce, but no cookie value", 2);
+									reset_timer(timerInterval);
+								}
 							}
 						}).fail(function() {
 							pu_log("Could not load the cookies handler script", 1);
@@ -237,7 +244,7 @@
 				if (settings.runatonce) {
 					pu_log("Executing a call immediately", 1);
 					getdata();
-				} else if(included_cookies && settings.cookie) {
+				} else if(included_cookies && $.cookie(settings.cookie.name)) {
 					// Do nothing (already handled above)
 				} else {
 					pu_log("Enqueing a the call for after " + timerInterval, 1);
