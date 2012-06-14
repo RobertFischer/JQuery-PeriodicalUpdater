@@ -17,8 +17,9 @@
 
 (function ($) {
 		var included_cookies = false; // Has the cookies script loaded? (i.e. it's safe to call $.cookie)
+		if($.cookie) included_cookies = true;
 
-		$.PeriodicalUpdater = function(url, options, callback, autoStopCallback){
+		$.PeriodicalUpdater = function(url, options, callback){
 			if(!options) options = {};
 			var settings = jQuery.extend(true, {
 					url: url,					// URL of ajax request
@@ -30,10 +31,12 @@
 					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
 					maxCalls: 0,			// maximum number of calls. 0 = no limit.
 					autoStop: 0,			// automatically stop requests after this many returns of the same data. 0 = disabled
+					autoStopCallback: null, // The callback to execute when we autoStop
 					cookie: false,		// whether (and how) to store a cookie
+					runatonce: false, // Whether to fire initially or wait
 					verbose: 0				// The level to be logging at: 0 = none; 1 = some; 2 = all
 				}, options);
-		
+
 			var pu_log = function (msg, lvl) {
 				lvl = lvl || 1;
 				if(settings.verbose >= lvl) {
@@ -196,7 +199,7 @@
 												noChange++;
 												if (noChange == autoStop) {
 														handle.stop();
-														if (autoStopCallback) { autoStopCallback(noChange); }
+														if (settings.autoStopCallback) { settings.autoStopCallback(noChange); }
 														return;
 												}
 										}
