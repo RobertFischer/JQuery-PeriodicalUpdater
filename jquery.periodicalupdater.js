@@ -167,10 +167,10 @@
 							if(mag > 0 && mag != 1) {
 								pu_log("Boosting timer by a factor of " + mag);
 								timerInterval = timerInterval * mag;
-								reset_timer(timerInterval);
 							} else {
 								pu_log("Cannot boost timer by a factor of " + mag);
 							}
+							reset_timer(timerInterval);
 							return;
 						},
 						restart: function (newInterval) {
