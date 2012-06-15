@@ -107,14 +107,12 @@
 						$.getScript("https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js", function() {
 							included_cookies = true;
 							pu_log("Loaded the cookies handler script", 2);
-							if(!settings.runatonce) {
-								if($.cookie(settings.cookie.name)) {
-									pu_log("Not runatonce and have cookie value", 2);
-									reset_timer($.cookie(settings.cookie.name));
-								} else {
-									pu_log("Not runatonce, but no cookie value", 2);
-									reset_timer(timerInterval);
-								}
+							if($.cookie(settings.cookie.name)) {
+								pu_log("Not runatonce and have cookie value", 2);
+								reset_timer($.cookie(settings.cookie.name));
+							} else {
+								pu_log("Not runatonce, but no cookie value", 2);
+								reset_timer(timerInterval);
 							}
 						}).fail(function() {
 							pu_log("Could not load the cookies handler script", 1);
@@ -248,7 +246,7 @@
 				// Make the first call
 				if (settings.runatonce) {
 					pu_log("Executing a call immediately", 1);
-					getdata();
+					getdata(true);
 				} else if(included_cookies && $.cookie(settings.cookie.name)) {
 					// Do nothing (already handled above)
 				} else {
