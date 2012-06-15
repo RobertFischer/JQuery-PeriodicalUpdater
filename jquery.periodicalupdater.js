@@ -163,6 +163,16 @@
 				}
 
 				var handle = {
+						boostTimer: function(mag) {
+							if(mag > 0 && mag != 1) {
+								pu_log("Boosting timer by a factor of " + mag);
+								timerInterval = timerInterval * mag;
+								reset_timer(timerInterval);
+							} else {
+								pu_log("Cannot boost timer by a factor of " + mag);
+							}
+							return;
+						},
 						restart: function (newInterval) {
 							pu_log("Calling restart");
 							maxCalls = originalMaxCalls;
