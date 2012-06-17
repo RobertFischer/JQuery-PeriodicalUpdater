@@ -19,6 +19,7 @@
 		var included_cookies = false; // Has the cookies script loaded? (i.e. it's safe to call $.cookie)
 		if($.cookie) included_cookies = true;
 
+		// The free version
 		$.PeriodicalUpdater = function(url, options, callback){
 			if(!options) options = {};
 			var settings = jQuery.extend(true, {
@@ -255,5 +256,13 @@
 				}
 
 				return handle;
+		};
+
+		// The bound version
+		$.fn.PeriodicalUpdater = function(url, options, callback) {
+			var me = this;
+			return $.PeriodicalUpdater(url, options, function() {
+				return callback.apply(me, arguments);
+			});
 		};
 })(jQuery);
