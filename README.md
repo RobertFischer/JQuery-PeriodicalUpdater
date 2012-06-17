@@ -27,6 +27,12 @@ anywhere on the page.
         // Process the new data (only called when there was a change)
 				// For a description of "success", see $.ajax documentation
     });
+
+		// You can also do a bound version: identical to above except that the callback function 
+		// has 'this' assigned to the JQuery object that you call it on.
+		$('.myClass').PeriodicalUpdater('/path/to/service', { /* ... */ }, function(/*...*/) { 
+			// this is $('.myClass') 
+		});
 ```
 
 ### Data:
