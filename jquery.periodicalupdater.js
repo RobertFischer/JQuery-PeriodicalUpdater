@@ -16,9 +16,6 @@
 */
 
 (function ($) {
-		var included_cookies = false; // Has the cookies script loaded? (i.e. it's safe to call $.cookie)
-		if($.cookie) included_cookies = true;
-
 		// The free version
 		$.PeriodicalUpdater = function(url, options, callback){
 			if(!options) options = {};
@@ -67,7 +64,7 @@
 						}
 						timerInterval = interval;
 						pu_log('resetting timer to ' + timerInterval + '.', 2);
-						if(settings.cookie && included_cookies) {
+						if(settings.cookie && $.cookie) {
 							$.cookie(settings.cookie.name, timerInterval, settings.cookie);
 						}
 						timer = setTimeout(getdata, timerInterval);
@@ -104,9 +101,8 @@
 						settings.cookie.name = url;
 					}
 
-					if(!included_cookies) {
+					if(!$.cookie) {
 						$.getScript("https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js", function() {
-							included_cookies = true;
 							pu_log("Loaded the cookies handler script", 2);
 							if($.cookie(settings.cookie.name)) {
 								pu_log("Not runatonce and have cookie value", 2);
@@ -188,7 +184,7 @@
 						stop: function () {
 							pu_log("Calling stop");
 							maxCalls = -1;
-							if(settings.cookie && included_cookies) {
+							if(settings.cookie && $.cookie) {
 								$.cookie(settings.cookie.name, null, settings.cookie);
 							}
 							return;
@@ -248,7 +244,7 @@
 				if (settings.runatonce) {
 					pu_log("Executing a call immediately", 1);
 					getdata(true);
-				} else if(included_cookies && $.cookie(settings.cookie.name)) {
+				} else if($.cookie && $.cookie(settings.cookie.name)) {
 					// Do nothing (already handled above)
 				} else {
 					pu_log("Enqueing a the call for after " + timerInterval, 1);
