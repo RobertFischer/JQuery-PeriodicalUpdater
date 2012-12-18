@@ -31,8 +31,8 @@
 					autoStop: 0,		// automatically stop requests after this many returns of the same data. 0 = disabled
 					autoStopCallback: null,	// The callback to execute when we autoStop
 					cookie: false,		// whether (and how) to store a cookie
-					runatonce: false,	// Whether to fire initially or wait (runafter || minTimeout) milliseconds
-					runafter: null,		// if runatonce is false and runafter is set, delay the first request by this many milliseconds
+					runAtOnce: false,	// Whether to fire initially or wait (runAfter || minTimeout) milliseconds
+					runAfter: null,		// if runAtOnce is false and runAfter is set, delay the first request by this many milliseconds
 					verbose: 0		// The level to be logging at: 0 = none; 1 = some; 2 = all
 				}, options);
 
@@ -242,13 +242,13 @@
 				};
 
 				// Make the first call
-				if (settings.runatonce) {
+				if (settings.runAtOnce) {
 					pu_log("Executing a call immediately", 1);
 					getdata(true);
 				} else if($.cookie && $.cookie(settings.cookie.name)) {
 					// Do nothing (already handled above)
 				} else {
-					timerInterval = (settings.runafter || timerInterval);
+					timerInterval = (settings.runAfter || timerInterval);
 					pu_log("Enqueing a the call for after " + timerInterval, 1);
 					reset_timer(timerInterval);
 				}
