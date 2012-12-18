@@ -20,19 +20,20 @@
 		$.PeriodicalUpdater = function(url, options, callback){
 			if(!options) options = {};
 			var settings = jQuery.extend(true, {
-					url: url,					// URL of ajax request
-					cache: false,			// By default, don't allow caching
+					url: url,		// URL of ajax request
+					cache: false,		// By default, don't allow caching
 					method: 'GET',		// method; get or post
-					data: '',					// array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
-					minTimeout: 1000, // starting value for the timeout in milliseconds
-					maxTimeout:64000, // maximum length of time between requests
+					data: '',		// array of values to be passed to the page - e.g. {name: "John", greeting: "hello"}
+					minTimeout: 1000,       // starting value for the timeout in milliseconds
+					maxTimeout:64000,       // maximum length of time between requests
 					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
-					maxCalls: 0,			// maximum number of calls. 0 = no limit.
-					autoStop: 0,			// automatically stop requests after this many returns of the same data. 0 = disabled
-					autoStopCallback: null, // The callback to execute when we autoStop
+					maxCalls: 0,		// maximum number of calls. 0 = no limit.
+					autoStop: 0,		// automatically stop requests after this many returns of the same data. 0 = disabled
+					autoStopCallback: null,	// The callback to execute when we autoStop
 					cookie: false,		// whether (and how) to store a cookie
-					runatonce: false, // Whether to fire initially or wait
-					verbose: 0				// The level to be logging at: 0 = none; 1 = some; 2 = all
+					runatonce: false,	// Whether to fire initially or wait (runafter || minTimeout) milliseconds
+					runafter: null,		// if runatonce is false and runafter is set, delay the first request by this many milliseconds
+					verbose: 0		// The level to be logging at: 0 = none; 1 = some; 2 = all
 				}, options);
 
 			var pu_log = function (msg, lvl) {
@@ -247,6 +248,7 @@
 				} else if($.cookie && $.cookie(settings.cookie.name)) {
 					// Do nothing (already handled above)
 				} else {
+					timerInterval = (settings.runafter || timerInterval);
 					pu_log("Enqueing a the call for after " + timerInterval, 1);
 					reset_timer(timerInterval);
 				}
