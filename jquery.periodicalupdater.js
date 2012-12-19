@@ -31,7 +31,7 @@
 					autoStop: 0,		// automatically stop requests after this many returns of the same data. 0 = disabled
 					autoStopCallback: null,	// The callback to execute when we autoStop
 					cookie: false,		// whether (and how) to store a cookie
-					runAtOnce: false,	// Whether to fire initially or wait (runAfter || minTimeout) milliseconds
+					runAtOnce: false,	// whether to fire initially or wait (runAfter || minTimeout) milliseconds
 					runAfter: null,		// if runAtOnce is false and runAfter is set, delay the first request by this many milliseconds
 					verbose: 0		// The level to be logging at: 0 = none; 1 = some; 2 = all
 				}, options);
