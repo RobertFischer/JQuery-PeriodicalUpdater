@@ -244,7 +244,7 @@
 				if (settings.runatonce) {
 					pu_log("Executing a call immediately", 1);
 					getdata(true);
-				} else if($.cookie && $.cookie(settings.cookie.name)) {
+				} else if(settings.cookie && $.cookie && $.cookie(settings.cookie.name)) {
 					// Do nothing (already handled above)
 				} else {
 					pu_log("Enqueing a the call for after " + timerInterval, 1);
