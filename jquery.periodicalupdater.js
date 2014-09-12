@@ -28,6 +28,7 @@
 					maxTimeout:64000, // maximum length of time between requests
 					multiplier: 2,		// if set to 2, timerInterval will double each time the response hasn't changed (up to maxTimeout)
 					maxCalls: 0,			// maximum number of calls. 0 = no limit.
+          maxCallsCallback: null, // The callback to execute when we reach our max number of calls
 					autoStop: 0,			// automatically stop requests after this many returns of the same data. 0 = disabled
 					autoStopCallback: null, // The callback to execute when we autoStop
 					cookie: false,		// whether (and how) to store a cookie
@@ -96,7 +97,7 @@
 						settings.cookie = {
 							name: settings.cookie.toString()
 						};
-					} 
+					}
 					if(!settings.cookie.name) {
 						settings.cookie.name = url;
 					}
@@ -154,6 +155,7 @@
 							pu_log("NOT sending data: stop has been called", 1);
 						} else {
 							pu_log("NOT sending data: maximum number of calls reached - " + maxCalls, 1);
+              if (settings.maxCallsCallback) { settings.maxCallsCallback(); }
 						}
 				}
 
