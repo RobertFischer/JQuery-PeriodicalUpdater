@@ -103,7 +103,7 @@
 					}
 
 					if(!$.cookie) {
-						$.getScript("https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js", function() {
+						$.getScript("//rawgit.com/carhartl/jquery-cookie/master/jquery.cookie.js", function() {
 							pu_log("Loaded the cookies handler script", 2);
 							if($.cookie(settings.cookie.name)) {
 								pu_log("Not runatonce and have cookie value", 2);
