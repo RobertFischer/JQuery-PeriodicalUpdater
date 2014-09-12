@@ -132,7 +132,7 @@
 
 
 				// Create the function to get data
-				function getdata(force) {
+				var getdata = function(force) {
 						var toSend = jQuery.extend(true, {}, ajaxSettings); // jQuery screws with what you pass in
 						if (typeof (options.data) == 'function') {
 							toSend.data = options.data();
